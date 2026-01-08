@@ -9,6 +9,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.UIElements;
+using Unity.VisualScripting;
 
 public class PlayerMovement : NetworkBehaviour
 {
@@ -19,7 +20,7 @@ public class PlayerMovement : NetworkBehaviour
     readonly public SyncVar<string> playerName = new SyncVar<string>();
     public TextMeshPro nameTMP;
 
-    readonly public SyncVar<Color> playerColor = new SyncVar<Color>();
+    //readonly public SyncVar<Color> playerColor = new SyncVar<Color>();
 
     readonly public SyncVar<int> playerHealth = new SyncVar<int>();
     public UnityEngine.UI.Image healthBar;
@@ -28,6 +29,12 @@ public class PlayerMovement : NetworkBehaviour
     private float traveledDistance = 0f;
     [SerializeField] float spawnDistance = 20f;
     private ProjectileSpawner spawner;
+
+
+    private Animator animator;
+
+    private GameObject characterModel;
+    readonly public SyncVar<Quaternion> syncRotation = new SyncVar<Quaternion>();
 
     private void Start()
     {
@@ -39,8 +46,10 @@ public class PlayerMovement : NetworkBehaviour
         playerName.OnChange += OnNameChange;
         playerName.Value = "Player_" + Owner.ClientId;
 
-        playerColor.OnChange += OnColorChange;
-        playerColor.Value = new Color(Random.value, Random.value, Random.value);
+        syncRotation.OnChange += OnRotationChanged;
+
+        //playerColor.OnChange += OnColorChange;
+        //playerColor.Value = new Color(Random.value, Random.value, Random.value);
 
         playerHealth.Value = 100;
         playerHealth.OnChange += (prev, next, asServer) =>
@@ -53,15 +62,30 @@ public class PlayerMovement : NetworkBehaviour
             syncSpeed.Value = 5f;
 
         traveledDistance = 0f;
-        spawner = GetComponent<ProjectileSpawner>();
+        //spawner = GetComponent<ProjectileSpawner>();
+
+        //set spawn position
+        SetInitialPositionServer(new Vector3(Random.Range(-3f, 3f), 6.5f, Random.Range(-3f, 3f)));
+        //set y position to 6.5f to avoid spawning inside the ground
+        transform.position = new Vector3(transform.position.x, 6.5f, transform.position.z);
+
+        animator = GetComponentInChildren<Animator>();
+        characterModel = transform.GetChild(0).gameObject;
+    }
+
+    [ServerRpc]
+    public void SetInitialPositionServer(Vector3 position)
+    {
+        transform.position = position;
     }
 
     public override void OnStartClient()
     {
         base.OnStartClient();
         OnNameChange(default, playerName.Value, false);
-        OnColorChange(default, playerColor.Value, false);
+        //OnColorChange(default, playerColor.Value, false);
         OnHealthChange(default, playerHealth.Value, false);
+        OnRotationChanged(default, syncRotation.Value, false);
     }
 
     /// <summary>
@@ -72,6 +96,9 @@ public class PlayerMovement : NetworkBehaviour
         // Only the owning client should read input
         if (!IsOwner)
             return;
+
+        //Set main cam above the player
+        Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y + 20f, transform.position.z);
 
         // Make sure we actually have a keyboard (e.g. not on some weird platform)
         var keyboard = Keyboard.current;
@@ -95,12 +122,18 @@ public class PlayerMovement : NetworkBehaviour
 
         // Send input to the server (server-authoritative movement)
         if (_input != Vector3.zero)
-            MoveServer(_input);
-
-        if (Input.GetKey(KeyCode.C))
         {
-            ChangeColor();
+            MoveServer(_input);
         }
+        else
+        {
+            GoIdle();
+        }
+
+        //if (Input.GetKey(KeyCode.C))
+        //{
+        //    ChangeColor();
+        //}
 
         if (Input.GetKey(KeyCode.H) && !isOnCD)
         {
@@ -127,14 +160,27 @@ public class PlayerMovement : NetworkBehaviour
         if (traveledDistance >= spawnDistance)
         {
             traveledDistance = 0f;
-            spawner.SpawnProjectileServer(transform.position);
+            //spawner.SpawnProjectileServer(transform.position);
         }
+
+        animator.Play("Run");
+        // Rotate character model to face movement direction
+        Quaternion targetRotation = Quaternion.LookRotation(movement);
+        characterModel.transform.rotation = Quaternion.Slerp(characterModel.transform.rotation, targetRotation, 0.2f);
+        syncRotation.Value = characterModel.transform.rotation;
+
 
         // Create callback message
         string callbackText = $"Moved by: {movement}";
 
         // Send callback only to the owning client
         MoveCallback(Owner, callbackText);
+    }
+
+    [ServerRpc]
+    private void GoIdle()
+    {
+        animator.Play("Idle");
     }
 
     // First parameter MUST be NetworkConnection for a TargetRpc
@@ -161,7 +207,7 @@ public class PlayerMovement : NetworkBehaviour
     [ServerRpc]
     private void ChangeColor()
     {
-        playerColor.Value = new Color(Random.value, Random.value, Random.value);
+        //playerColor.Value = new Color(Random.value, Random.value, Random.value);
     }
 
     [ServerRpc]
@@ -187,24 +233,32 @@ public class PlayerMovement : NetworkBehaviour
         nameTMP.text = playerName.Value;
     }
 
-    public void OnColorChange(Color prev, Color next, bool asServer)
+    private void OnRotationChanged(Quaternion prev, Quaternion next, bool asServer)
     {
-        GetComponent<Renderer>().material.color = next;
-
-        float luminance = next.r * 0.2126f + next.g * 0.7152f + next.b * 0.0722f;
-
-        if (luminance < 0.5f)
+        if (characterModel != null)
         {
-            nameTMP.color = Color.white;
-            healthBar.color = Color.white;
+            characterModel.transform.rotation = syncRotation.Value;
         }
-        else
-        {
-            nameTMP.color = Color.black;
-            healthBar.color = Color.black;
-        }
-            
     }
+
+    //public void OnColorChange(Color prev, Color next, bool asServer)
+    //{
+    //    GetComponent<Renderer>().material.color = next;
+
+    //    float luminance = next.r * 0.2126f + next.g * 0.7152f + next.b * 0.0722f;
+
+    //    if (luminance < 0.5f)
+    //    {
+    //        nameTMP.color = Color.white;
+    //        healthBar.color = Color.white;
+    //    }
+    //    else
+    //    {
+    //        nameTMP.color = Color.black;
+    //        healthBar.color = Color.black;
+    //    }
+            
+    //}
 
     public void OnHealthChange(int prev, int next, bool asServer)
     {
