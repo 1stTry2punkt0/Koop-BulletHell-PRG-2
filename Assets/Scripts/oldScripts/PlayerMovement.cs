@@ -36,6 +36,21 @@ public class PlayerMovement : NetworkBehaviour
     private GameObject characterModel;
     readonly public SyncVar<Quaternion> syncRotation = new SyncVar<Quaternion>();
 
+    public override void OnStartServer()
+    {
+        base.OnStartServer();
+        // Register this player on the server
+        PlayerTracker.RegisterPlayer(this);
+    }
+
+    public override void OnStopServer()
+    {
+        base.OnStopServer();
+        // Unregister this player from the server
+        PlayerTracker.UnregisterPlayer(this);
+    }
+
+
     private void Start()
     {
         // Subscribe to tick event when the object is active
