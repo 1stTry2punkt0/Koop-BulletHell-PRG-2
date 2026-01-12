@@ -3,6 +3,7 @@ using TMPro;
 
 public class WaveUI : MonoBehaviour
 {
+    // References to WaveController and UI Text components
     [Header("References")]
     [SerializeField] private WaveController waveController;
     [SerializeField] private TMP_Text waveCount;
