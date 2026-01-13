@@ -59,7 +59,7 @@ public class Enemy : NetworkBehaviour
     public void Die()
     {
         // Handle death logic here
-        EnemyAnimation.Die();
+        enemyAnimation.Die();
         NetworkObject lootDrop = Instantiate(enemyType.loot, transform.position, Quaternion.identity);
         ClearBody(gameObject);
     }
