@@ -17,6 +17,8 @@ namespace FishNet.Managing.Server
         /// RPCLink indexes which can be used.
         /// </summary>
         private Queue<ushort> _availableRpcLinkIndexes = new();
+
+        public object SpawnedObjects { get; set; }
         #endregion
 
         /// <summary>
