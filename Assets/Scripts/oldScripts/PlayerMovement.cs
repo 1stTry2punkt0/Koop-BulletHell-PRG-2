@@ -4,6 +4,7 @@ using FishNet.Transporting;
 using FishNet.Object.Synchronizing.Internal;
 using FishNet.Connection;
 using FishNet.Managing.Timing;
+using FishNet.Component.Animating;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -31,7 +32,7 @@ public class PlayerMovement : NetworkBehaviour
     private ProjectileSpawner spawner;
 
 
-    private Animator animator;
+    private NetworkAnimator animator;
 
     private GameObject characterModel;
     readonly public SyncVar<Quaternion> syncRotation = new SyncVar<Quaternion>();
@@ -84,7 +85,7 @@ public class PlayerMovement : NetworkBehaviour
         //set y position to 6.5f to avoid spawning inside the ground
         transform.position = new Vector3(transform.position.x, 6.5f, transform.position.z);
 
-        animator = GetComponentInChildren<Animator>();
+        animator = GetComponent<NetworkAnimator>();
         characterModel = transform.GetChild(0).gameObject;
     }
 
@@ -113,7 +114,7 @@ public class PlayerMovement : NetworkBehaviour
             return;
 
         //Set main cam above the player
-        Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y + 20f, transform.position.z);
+        Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y + 15f, transform.position.z);
 
         // Make sure we actually have a keyboard (e.g. not on some weird platform)
         var keyboard = Keyboard.current;
@@ -178,7 +179,7 @@ public class PlayerMovement : NetworkBehaviour
             //spawner.SpawnProjectileServer(transform.position);
         }
 
-        animator.Play("Run");
+        animator.SetTrigger("Run");
         // Rotate character model to face movement direction
         Quaternion targetRotation = Quaternion.LookRotation(movement);
         characterModel.transform.rotation = Quaternion.Slerp(characterModel.transform.rotation, targetRotation, 0.2f);
@@ -203,7 +204,7 @@ public class PlayerMovement : NetworkBehaviour
     private void MoveCallback(NetworkConnection conn, string msg)
     {
         // Runs only on the client that owns this object
-        Debug.Log($"[Callback] {msg}");
+        //Debug.Log($"[Callback] {msg}");
     }
 
 

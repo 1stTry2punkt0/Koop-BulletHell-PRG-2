@@ -1458,7 +1458,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584333881073553805
+  _initializedTimestamp: -8584333145961714607
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0
@@ -1475,7 +1475,7 @@ MonoBehaviour:
   _teleportThreshold: 1
   <PrefabId>k__BackingField: 0
   <SpawnableCollectionId>k__BackingField: 0
-  <AssetPathHash>k__BackingField: 165201967741500463
+  <AssetPathHash>k__BackingField: 17750771382270889216
   SceneId: 0
   SerializedTransformProperties:
     Position: {x: 0, y: 0, z: 0}
