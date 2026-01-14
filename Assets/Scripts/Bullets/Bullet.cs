@@ -5,11 +5,11 @@ using UnityEngine.VFX;
 
 public class Bullet : NetworkBehaviour
 {
-    public Vector3 direction;
     public float speed = 10f;
     public float lifeTime = 5f;
     public float damage = 1;
-    public Vector3 noY => new Vector3(direction.x, 0, direction.z).normalized;
+
+
 
 
     private void Awake()
@@ -20,7 +20,8 @@ public class Bullet : NetworkBehaviour
 
     private void Update() 
     {
-        transform.position += noY * speed * Time.deltaTime;
+        //move the bullet forward in z direction
+        transform.Translate(Vector3.forward * speed * Time.deltaTime);
         lifeTime -= Time.deltaTime;
         if (lifeTime <= 0f)
         {
@@ -40,7 +41,6 @@ public class Bullet : NetworkBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("Bullet collided with: " + collision.collider.name);
         Despawn();
     }
 

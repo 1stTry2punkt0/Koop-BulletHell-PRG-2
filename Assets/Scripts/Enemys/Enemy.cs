@@ -97,7 +97,7 @@ public class Enemy : NetworkBehaviour
 
     private void RangedAttack()
     {
-        Debug.Log("Ranged Attack");
+        
         if (enemyType.boss)
         {
             // Shoot multiple projectiles in a spread
@@ -107,26 +107,14 @@ public class Enemy : NetworkBehaviour
             {
                 float angle = -spreadAngle / 2 + (spreadAngle / (projectileCount - 1)) * i;
                 Quaternion rotation = Quaternion.Euler(0, angle, 0) * Quaternion.LookRotation(enemyMovement.target.position - transform.position);
-                NetworkObject projectile = Instantiate(enemyType.projectile, transform.position + transform.forward * 1.5f, rotation);
+                ProjectileSpawner.Instance.SpawnProjectileServer( transform.position + transform.forward * 1.5f, rotation, 10f, 10f, 1f, false);
 
-                Bullet projectileData = projectile.GetComponent<Bullet>();
-                projectileData.direction = rotation * Vector3.forward;
-                projectileData.SetTag("EnemyProjectile");
-                projectileData.SetLayer(LayerMask.NameToLayer("EnemyProjectile"));
-                Spawn(projectile);
             }
         }
         else
         {
             // Shoot single projectile
-            NetworkObject projectile = Instantiate(enemyType.projectile, transform.position + transform.forward + Vector3.up, Quaternion.LookRotation(enemyMovement.target.position - transform.position));
-            
-
-            Bullet projectileData = projectile.GetComponent<Bullet>();
-            projectileData.direction = (enemyMovement.target.position - projectile.transform.position).normalized;
-            projectileData.SetTag("EnemyProjectile");
-            projectileData.SetLayer(LayerMask.NameToLayer("EnemyProjectile"));
-            Spawn(projectile);
+            ProjectileSpawner.Instance.SpawnProjectileServer(transform.position + Vector3.up, Quaternion.LookRotation(enemyMovement.target.position - transform.position), 10f, 10f, 1f, false);
         }
     }
 
