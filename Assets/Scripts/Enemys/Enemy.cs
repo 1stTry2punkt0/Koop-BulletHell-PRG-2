@@ -1,6 +1,7 @@
 using UnityEngine;
 using FishNet.Object;
 using System.Collections;
+using UnityEngine.VFX;
 
 public class Enemy : NetworkBehaviour
 {
@@ -84,9 +85,9 @@ public class Enemy : NetworkBehaviour
                 break;
         }
 
-        enemyAnimation.Attack();
+        //enemyAnimation.Attack();
         canAttack = false;
-        AttackCooldown(enemyType.attackCooldown);
+        StartCoroutine(AttackCooldown(enemyType.attackCooldown));
     }
 
     private void MeleeAttack() 
@@ -96,13 +97,36 @@ public class Enemy : NetworkBehaviour
 
     private void RangedAttack()
     {
+        Debug.Log("Ranged Attack");
         if (enemyType.boss)
         {
             // Shoot multiple projectiles in a spread
+            int projectileCount = 5;
+            float spreadAngle = 30f; // Total spread angle in degrees
+            for (int i = 0; i < projectileCount; i++)
+            {
+                float angle = -spreadAngle / 2 + (spreadAngle / (projectileCount - 1)) * i;
+                Quaternion rotation = Quaternion.Euler(0, angle, 0) * Quaternion.LookRotation(enemyMovement.target.position - transform.position);
+                NetworkObject projectile = Instantiate(enemyType.projectile, transform.position + transform.forward * 1.5f, rotation);
+
+                Bullet projectileData = projectile.GetComponent<Bullet>();
+                projectileData.direction = rotation * Vector3.forward;
+                projectileData.SetTag("EnemyProjectile");
+                projectileData.SetLayer(LayerMask.NameToLayer("EnemyProjectile"));
+                Spawn(projectile);
+            }
         }
         else
         {
             // Shoot single projectile
+            NetworkObject projectile = Instantiate(enemyType.projectile, transform.position + transform.forward + Vector3.up, Quaternion.LookRotation(enemyMovement.target.position - transform.position));
+            
+
+            Bullet projectileData = projectile.GetComponent<Bullet>();
+            projectileData.direction = (enemyMovement.target.position - projectile.transform.position).normalized;
+            projectileData.SetTag("EnemyProjectile");
+            projectileData.SetLayer(LayerMask.NameToLayer("EnemyProjectile"));
+            Spawn(projectile);
         }
     }
 
@@ -113,11 +137,11 @@ public class Enemy : NetworkBehaviour
 
     IEnumerator AttackCooldown(float cooldown)
     {
-        enemyAnimation.Idle();
+        //enemyAnimation.Idle();
         yield return new WaitForSeconds(cooldown);
         canAttack = true;
         enemyMovement.canMove = true;
-        enemyAnimation.Run();
+        //enemyAnimation.Run();
     }
 
     IEnumerator ClearBody(GameObject enemy)
