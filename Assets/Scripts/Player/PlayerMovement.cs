@@ -27,9 +27,7 @@ public class PlayerMovement : NetworkBehaviour
     public UnityEngine.UI.Image healthBar;
     private bool isOnCD = false;
 
-    private float traveledDistance = 0f;
-    [SerializeField] float spawnDistance = 20f;
-    private ProjectileSpawner spawner;
+    [SerializeField] LayerMask layerMask;
 
 
     private NetworkAnimator animator;
@@ -77,7 +75,6 @@ public class PlayerMovement : NetworkBehaviour
         if (syncSpeed.Value == 0f)
             syncSpeed.Value = 5f;
 
-        traveledDistance = 0f;
         //spawner = GetComponent<ProjectileSpawner>();
 
         //set spawn position
@@ -168,16 +165,17 @@ public class PlayerMovement : NetworkBehaviour
         // Calculate movement on the server only (server-authoritative)
         Vector3 movement = input.normalized * syncSpeed.Value * delta;
 
+        if(Physics.Raycast(transform.position, input.normalized, out RaycastHit hit, movement.magnitude + 0.5f, layerMask))
+        {
+            MoveCallback(Owner, $"Movement blocked by: {hit.collider.name}");
+            return;
+        }
+
 
         // Apply movement to server-side position
         transform.position += movement;
 
-        traveledDistance += movement.magnitude;
-        if (traveledDistance >= spawnDistance)
-        {
-            traveledDistance = 0f;
-            //spawner.SpawnProjectileServer(transform.position);
-        }
+        
 
         animator.SetTrigger("Run");
         // Rotate character model to face movement direction
@@ -205,6 +203,10 @@ public class PlayerMovement : NetworkBehaviour
     {
         // Runs only on the client that owns this object
         //Debug.Log($"[Callback] {msg}");
+        if(msg == "Movement blocked by: World")
+        {
+            UIManager.Instance.ShowAlphaBlock();
+        }
     }
 
 

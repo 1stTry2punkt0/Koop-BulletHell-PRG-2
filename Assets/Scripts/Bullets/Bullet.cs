@@ -25,6 +25,7 @@ public class Bullet : NetworkBehaviour
         lifeTime -= Time.deltaTime;
         if (lifeTime <= 0f)
         {
+            if(IsServerInitialized)
             Despawn();
         }
     }
@@ -41,7 +42,8 @@ public class Bullet : NetworkBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        Despawn();
+        if (IsServerInitialized)
+            Despawn();
     }
 
 

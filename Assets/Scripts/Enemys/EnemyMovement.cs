@@ -18,9 +18,22 @@ public class EnemyMovement : NetworkBehaviour
         agent.stoppingDistance = typeData.attackRange - 2f;
     }
 
-
-    private void Update()
+    public override void OnStartServer()
     {
+        base.OnStartServer();
+        TimeManager.OnTick += TimeManager_OnTick;
+    }
+
+    public override void OnStopServer()
+    {
+        base.OnStopServer();
+        TimeManager.OnTick -= TimeManager_OnTick;
+    }
+
+
+    private void TimeManager_OnTick()
+    {
+        if (!IsServerInitialized || NetworkObject == null || !NetworkObject.IsSpawned) return;
         FindTarget();
         MoveTowardsTarget();
     }

@@ -35,12 +35,12 @@ public class Enemy : NetworkBehaviour
     {
         if(collision.collider.CompareTag("PlayerProjectile"))
         {
-            //TakeDamage(collision.collider.GetComponent<PlayerProjectile>().damage);
+            TakeDamage(collision.collider.GetComponent<Bullet>().damage);
         }
     }
 
     [Server]
-    public void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
         // Handle damage logic here
         currentHealth -= damage;
@@ -60,7 +60,7 @@ public class Enemy : NetworkBehaviour
     public void Die()
     {
         // Handle death logic here
-        enemyAnimation.Die();
+        //enemyAnimation.Die();
         NetworkObject lootDrop = Instantiate(enemyType.loot, transform.position, Quaternion.identity);
         ClearBody(gameObject);
     }

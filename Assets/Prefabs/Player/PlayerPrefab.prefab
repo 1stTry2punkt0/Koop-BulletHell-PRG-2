@@ -417,6 +417,7 @@ MonoBehaviour:
   - {fileID: 3962819400223071405}
   - {fileID: 6665481258672193956}
   - {fileID: 5256477453771515585}
+  - {fileID: -2092582727301848333}
   InitializedParentNetworkBehaviour: {fileID: 0}
   InitializedNestedNetworkObjects: []
   RuntimeParentNetworkBehaviour: {fileID: 0}
@@ -427,7 +428,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584332013458595612
+  _initializedTimestamp: -8584331417182055522
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0
@@ -515,7 +516,9 @@ MonoBehaviour:
   speed: 5
   nameTMP: {fileID: 755546594789985595}
   healthBar: {fileID: 8074151399123776005}
-  spawnDistance: 20
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 24576
 --- !u!114 &547811204195479866
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -617,9 +620,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6de1b3819ee96b4097ce9a6e2199e38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 255
+  _componentIndexCache: 3
   _addedNetworkObject: {fileID: 3484095658981735308}
-  _networkObjectCache: {fileID: 0}
+  _networkObjectCache: {fileID: 3484095658981735308}
   difficulty: 1
   enemyLayer:
     serializedVersion: 2
