@@ -12,11 +12,14 @@ public class WaveEnemySetter
     public int waveIndex;
 
     [Tooltip("Enemies allowed in this wave")]
-    public List<NetworkObject> enemyPrefabs;
+    public List<WeightedEnemy> enemies;
 
     [Tooltip("Spawn only one enemy")]
     public bool bossWave;
 
     [Tooltip("Duration of the wave in seconds")]
     public float waveDuration = 30f;
+
+    [Tooltip("Spawn interval in seconds")]
+    public float spawnInterval = 0.5f;
 }

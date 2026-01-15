@@ -20,23 +20,12 @@ public class EnemySpawner : NetworkBehaviour
     private readonly List<NetworkObject> _spawnedEnemies = new(); // track spawned enemies
 
     /// <summary>
-    /// Sets the collection of enemy network objects to be used as the active enemy pool.
-    /// </summary>
-    /// <param name="enemyPool">
-    public void SetEnemyPool(List<NetworkObject> enemyPool)
-    {
-        activeEnemyPool = enemyPool;
-    }
-    /// <summary>
     /// Spawns an enemy from the active enemy pool at a valid position relative to a one of the player.
     /// </summary>
-    public void SpawnEnemy()
+    public void SpawnEnemy(NetworkObject enemyPrefab)
     {
         // Ensure server-side execution
         if (!IsServerInitialized)
-            return;
-        // Check if there are enemies to spawn
-        if (activeEnemyPool.Count == 0 || activeEnemyPool == null)
             return;
         // Get Player from PlayerTracker and check if there are any players
         var players = PlayerTracker.Players;
@@ -50,8 +39,6 @@ public class EnemySpawner : NetworkBehaviour
         // If a valid position is found, spawn the enemy
         if (spawnPos != Vector3.zero)
         {
-            //Pick a random enemy prefab from the active pool
-            NetworkObject enemyPrefab = activeEnemyPool[Random.Range(0, activeEnemyPool.Count)];
 
             // Instantiate and spawn the picked enemy
             NetworkObject enemyInstance = Instantiate(enemyPrefab, spawnPos, Quaternion.identity);

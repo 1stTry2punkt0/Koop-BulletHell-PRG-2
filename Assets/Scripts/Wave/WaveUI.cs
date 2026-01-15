@@ -22,7 +22,7 @@ public class WaveUI : MonoBehaviour
         if (waveController.RemainingWaveTime > 0)
             waveTimer.text = $"Time Left: {minutes:00}:{seconds:00}"; // show time left in current wave
         else if (waveController.TimeBetweenWaves > 0)
-            waveTimer.text = $"Next Wave In: {minutes:00}:{seconds:00}"; // show time until next wave
+            waveTimer.text = $"Starting Wave In: {minutes:00}:{seconds:00}"; // show time until next wave
         else
             waveTimer.text = ""; //fallback
 

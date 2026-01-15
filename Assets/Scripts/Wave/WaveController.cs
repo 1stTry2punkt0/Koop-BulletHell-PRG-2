@@ -11,8 +11,8 @@ public class WaveController : NetworkBehaviour
     [Header("Wave Settings")]
     [SerializeField] private int totalWaves = 3;
     [SerializeField] private float timeBetweenWaves = 15f;
-    [SerializeField] private float spawnInterval = 0.5f;
     [SerializeField] private List<WaveEnemySetter> waveEnemySetters;
+    private float currentSpawnInterval;
 
     // Variables that need to be synced across clients
     [Header("Synced Variables")]
@@ -34,7 +34,8 @@ public class WaveController : NetworkBehaviour
 
     // Coroutine reference for spawning enemies
     private Coroutine spawnCoroutine;
-
+    private List<WeightedEnemy> currentEnemies;
+    private int totalTickets;
 
     public override void OnStartServer()
     {
@@ -68,27 +69,47 @@ public class WaveController : NetworkBehaviour
     }
     private IEnumerator ManageWaves()
     {
+        //wait for both players to be ready
+        yield return StartCoroutine(WaitForPlayers());
+
+        // One time delay before starting the first wave
+        betweenWaveTime.Value = timeBetweenWaves;
+        while (betweenWaveTime.Value > 0f)
+        {
+            // Update time between waves
+            betweenWaveTime.Value -= Time.deltaTime;
+            yield return null;
+        }
+        betweenWaveTime.Value = 0f;
+
         for (int wave = 1; wave <= totalWaves; wave++)
         {
-            //wait for both players to be ready
-            yield return StartCoroutine(WaitForPlayers());
 
             // Get enemy settings for the current wave
             WaveEnemySetter enemySetter = GetEnemiesForWave(wave);
-
-            // Configure enemy spawner for the current wave
-            enemySpawner.SetEnemyPool(enemySetter.enemyPrefabs);
+           
+            currentEnemies = enemySetter.enemies;
+            totalTickets = 0; // Reset total tickets for the wave
+            // Calculate total tickets for weighted random selection
+            foreach (var enemy in currentEnemies)
+            {
+                totalTickets += enemy.tickets;
+            }
 
             // Initialize wave variables
             currentWave.Value = wave;
             remainingWaveTime.Value = enemySetter.waveDuration;
+            currentSpawnInterval = enemySetter.spawnInterval;
 
-            if(enemySetter.bossWave)
+            if (enemySetter.bossWave)
             {
                 // Spawn only one enemy at the start of the wave
-                enemySpawner.SpawnEnemy();
+                if (currentEnemies.Count > 0) { 
+                    NetworkObject bossPrefab = currentEnemies[0].enemyPrefab;
+                    enemySpawner.SpawnEnemy(bossPrefab);
+                }
             }
-            else if(!enemySetter.bossWave)
+            else 
             {
                 // Start spawning enemies at regular intervals
                 spawnCoroutine = StartCoroutine(SpawnEnemies());
@@ -139,8 +160,9 @@ public class WaveController : NetworkBehaviour
             if (spawnTime <= 0f)
             {
                 // Spawn an enemy and reset spawn timer to the spawn in intervals
-                enemySpawner.SpawnEnemy();
-                spawnTime = spawnInterval;
+                var prefab = GetRandomEnemyPrefab();
+                enemySpawner.SpawnEnemy(prefab);
+                spawnTime = currentSpawnInterval;
             }
             yield return null;
         }
@@ -150,8 +172,24 @@ public class WaveController : NetworkBehaviour
         // Wait until at least 2 players are connected
         while (PlayerTracker.Players.Count < 2)
         {
-            yield return new WaitForSeconds(1f);
+            yield return null;
         }
+    }
+    private NetworkObject GetRandomEnemyPrefab()
+    {
+        // Select a random enemy prefab based on weighted tickets
+        int randomTicket = Random.Range(0, totalTickets);
+        int cumulativeTickets = 0;
+        foreach (var enemy in currentEnemies)
+        {
+            // Accumulate tickets to find the selected enemy
+            cumulativeTickets += enemy.tickets;
+            if (randomTicket < cumulativeTickets)
+            {
+                return enemy.enemyPrefab; // Return the selected enemy prefab
+            }
+        }
+        return currentEnemies[0].enemyPrefab; // Fallback in case of an error
     }
 
 }
