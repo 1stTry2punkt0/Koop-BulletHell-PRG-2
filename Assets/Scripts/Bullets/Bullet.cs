@@ -8,7 +8,7 @@ public class Bullet : NetworkBehaviour
     public float speed = 10f;
     public float lifeTime = 5f;
     public float damage = 1;
-
+    [SerializeField] LayerMask layerMask;
 
 
 
@@ -20,6 +20,15 @@ public class Bullet : NetworkBehaviour
 
     private void Update() 
     {
+        if (Physics.SphereCast(transform.position, 0.5f, transform.forward, out RaycastHit hit, speed * Time.deltaTime, layerMask))
+        {
+            if (hit.collider != null )
+            {
+                if (IsServerInitialized)
+                    Despawn();
+            }
+        }
+
         //move the bullet forward in z direction
         transform.Translate(Vector3.forward * speed * Time.deltaTime);
         lifeTime -= Time.deltaTime;
