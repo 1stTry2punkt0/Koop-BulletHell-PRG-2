@@ -519,6 +519,7 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 24576
+  cameraPrefab: {fileID: 2480927730295343383, guid: fa2661b7cf33e8044ae86f22bbca2db9, type: 3}
 --- !u!114 &547811204195479866
 MonoBehaviour:
   m_ObjectHideFlags: 0

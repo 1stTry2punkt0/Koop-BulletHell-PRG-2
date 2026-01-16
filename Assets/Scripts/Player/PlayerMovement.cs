@@ -35,6 +35,11 @@ public class PlayerMovement : NetworkBehaviour
     private GameObject characterModel;
     readonly public SyncVar<Quaternion> syncRotation = new SyncVar<Quaternion>();
 
+
+    // Accessors for camera parameters for enemy spawning logic
+    public float CamFov { get; private set; }
+    public float CamAspect { get; private set; }
+
     public override void OnStartServer()
     {
         base.OnStartServer();
@@ -85,7 +90,10 @@ public class PlayerMovement : NetworkBehaviour
         animator = GetComponent<NetworkAnimator>();
         characterModel = transform.GetChild(0).gameObject;
     }
-
+    /// <summary>
+    /// send initial position to server for enemy spawning logic
+    /// </summary>
+    /// <param name="position"></param>
     [ServerRpc]
     public void SetInitialPositionServer(Vector3 position)
     {
@@ -95,10 +103,21 @@ public class PlayerMovement : NetworkBehaviour
     public override void OnStartClient()
     {
         base.OnStartClient();
+        if (!IsOwner)
+            return;
+        Camera camera = Camera.main;
+        SendCameraParmsServer(camera.fieldOfView, camera.aspect);
         OnNameChange(default, playerName.Value, false);
         //OnColorChange(default, playerColor.Value, false);
         OnHealthChange(default, playerHealth.Value, false);
         OnRotationChanged(default, syncRotation.Value, false);
+    }
+
+    [ServerRpc]
+    private void SendCameraParmsServer(float fov, float aspect)
+    {
+        CamFov = fov;
+        CamAspect = aspect;
     }
 
     /// <summary>

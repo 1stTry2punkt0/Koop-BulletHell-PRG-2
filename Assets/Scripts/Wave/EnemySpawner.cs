@@ -4,6 +4,7 @@ using System;
 using UnityEngine;
 using System.Collections.Generic;
 using Random = UnityEngine.Random;
+using UnityEngine.AI;
 
 public class EnemySpawner : NetworkBehaviour
 {
@@ -16,9 +17,11 @@ public class EnemySpawner : NetworkBehaviour
     [SerializeField] private LayerMask obstacles; // LayerMask for obstacles
     [SerializeField] private float spawnRadiusCheck = 1f; // Radius to check for obstacles
     [SerializeField] private int maxSpawnAttempts = 10; // Limit attempts to find valid spawn position
+    private const float cameraHeight = 15f; // Height of the player's camera from ground
 
     private readonly List<NetworkObject> _spawnedEnemies = new(); // track spawned enemies
 
+    #region Spawn Enemies
     /// <summary>
     /// Spawns an enemy from the active enemy pool at a valid position relative to a one of the player.
     /// </summary>
@@ -48,44 +51,123 @@ public class EnemySpawner : NetworkBehaviour
         }
 
     }
+    #endregion
+
+    #region Find Spawn 
+    /// <summary>
+    /// Uses player's camera parameters to determine if a point is visible to the player.
+    /// </summary>
+    /// <param name="player"></param>
+    /// <param name="point"></param>
+    /// <returns></returns>
+    private bool IsVisibleToPlayer(PlayerMovement player, Vector3 point)
+    {
+        // Convert point to player's local space
+        Vector3 localPos = point -player.transform.position;
+
+        // Calculate camera frustum dimensions at ground level
+        float halfHeight = Mathf.Tan(Mathf.Deg2Rad * (player.CamFov / 2f)) * cameraHeight; 
+        float halfWidth = halfHeight * player.CamAspect; 
+
+        // Check if point is within frustum bounds
+        return Mathf.Abs(localPos.x) <= halfWidth && Mathf.Abs(localPos.z) <= halfHeight;
+    }
+
+    /// <summary>
+    /// Visualizes the player's camera rectangle and the spawn point for debugging purposes.
+    /// </summary>
+    /// <param name="player"></param>
+    /// <param name="point"></param>
+    private void VisualizeCameraRectangle(PlayerMovement player, Vector3 point)
+    {
+        // Calculate camera frustum dimensions at ground level, same as in IsVisibleToPlayer
+        float halfHeight = Mathf.Tan(Mathf.Deg2Rad * (player.CamFov / 2f)) * cameraHeight;
+        float halfWidth = halfHeight * player.CamAspect;
+        // Get center position
+        Vector3 center = player.transform.position;
+        // Debug draw rectangle on ground
+        Vector3 bl = center + new Vector3(-halfWidth, 0f, -halfHeight); // get bottom left corner
+        Vector3 br = center + new Vector3(halfWidth, 0f, -halfHeight); // bottom right
+        Vector3 tr = center + new Vector3(halfWidth, 0f, halfHeight); // top right
+        Vector3 tl = center + new Vector3(-halfWidth, 0f, halfHeight); // top left
+
+
+        // Draw rectangle lines
+        Debug.DrawLine(bl, br, Color.green, 1f); 
+        Debug.DrawLine(br, tr, Color.green, 1f);
+        Debug.DrawLine(tr, tl, Color.green, 1f);
+        Debug.DrawLine(tl, bl, Color.green, 1f);
+
+        // Draw line to spawn point
+        bool isInside = IsVisibleToPlayer(player, point);
+        // Color red if inside view, blue if outside
+        Debug.DrawLine(point, point + Vector3.up * 2f, isInside ? Color.red : Color.blue, 1f);
+    }
+
     /// <summary>
     /// Finds a valid spawn position around the specified player, ensuring it's outside the player's camera view and free of obstacles.
     /// </summary>
-    /// <param name="player"></param>
     /// <returns></returns>
+
     private Vector3 FindSpawn(PlayerMovement player)
     {
-        // Get player position and their main camera
-        Vector3 playerPos = player.transform.position;
-        Camera playerCam = Camera.main;
+        Vector3 spawnPos = Vector3.zero;
 
-        // Attempt to find a valid spawn position
+        // Find a valid spawn position
         for (int i = 0; i < maxSpawnAttempts; i++)
         {
             Vector3 direction = Random.onUnitSphere; // Choose a random direction
             direction.y = 0; // Keep spawn on the horizontal plane
             direction.Normalize();
+
             // Random distance within specified range
             float distance = Random.Range(spawnDistanceMin, spawnDistanceMax);
-            Vector3 potentialPos = playerPos + direction * distance; // Calculate potential spawn position
-            // keep spawn outside player camera view
-            Vector3 viewportPoint = playerCam.WorldToViewportPoint(potentialPos); // Convert to viewport coordinates
-            // Check if within camera view
-            if (!(viewportPoint.x < 0 || viewportPoint.x > 1 || viewportPoint.y < 0 || viewportPoint.y > 1))
-                continue;
+            Vector3 potentialPos = player.transform.position + direction * distance; // Calculate potential spawn position
 
-            // Raycast down to find ground level
-            Ray ray = new Ray(potentialPos + Vector3.up * 10f, Vector3.down); 
+            // Check if on NavMesh
+            NavMeshHit hit;
+            if (!NavMesh.SamplePosition(potentialPos, out hit, 2.0f, NavMesh.AllAreas)) // 2.0f is the max distance to sample
+            {
+                Debug.Log("Spawn position not on NavMesh, trying again.");
+                continue; // Not on NavMesh, try again
+            }
+
+            bool isInView = false;
+
+            // Check all Players' cameras to ensure spawn is outside their view
+            foreach (var p in PlayerTracker.Players)
+            {
+                if (IsVisibleToPlayer(p, hit.position))
+                {
+                    // Position is in this player's view
+                    isInView = true;
+                    break;
+                }
+            }
+            // Visualize the camera rectangle and spawn point for debugging
+            VisualizeCameraRectangle(player, hit.position); 
+
+            // If position is in any player's view, continue to next attempt
+            if (isInView)
+            {
+                Debug.Log("Spawn position is in player's view, trying again.");
+                continue;
+            }
+
 
             // Check for obstacles
-            if (!Physics.CheckSphere(potentialPos, spawnRadiusCheck, obstacles))
-                {
-                    return potentialPos;
-                }
-
+            if (!Physics.CheckSphere(hit.position, spawnRadiusCheck, obstacles))
+            {
+                spawnPos = hit.position;
+                break;
+            }
         }
-        return Vector3.zero; // Failed to find a valid position
+        return spawnPos; // Return found position or Vector3.zero if none found
     }
+
+    #endregion
+
+    #region Despawn Enemy
     /// <summary>
     /// Despawn all spawned enemies after wave ends.
     /// </summary>
@@ -102,4 +184,5 @@ public class EnemySpawner : NetworkBehaviour
         // Clear the list after despawning
         _spawnedEnemies.Clear();
     }
+    #endregion
 }
