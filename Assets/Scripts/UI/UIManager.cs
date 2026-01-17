@@ -52,13 +52,13 @@ public class UIManager : MonoBehaviour
 
     void Start()
     {
-        UpdateScore(0);
+      /*  UpdateScore(0);
         UpdateHealth(2, 3);
         AddRewardItem(false);
         AddRewardItem(false);
         UpdateEXP(0.1f);
         ActivateBossUI("Your Father");
-        UpdateBossHP(0.8f);
+        UpdateBossHP(0.8f); */
     }
 
     public void UpdateScore(int score)
