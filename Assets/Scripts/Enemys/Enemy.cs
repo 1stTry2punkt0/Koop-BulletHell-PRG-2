@@ -13,6 +13,8 @@ public class Enemy : NetworkBehaviour
 
     public bool canAttack = true;
 
+    [Header("Animation Settings")]
+    [SerializeField] private float attackAniTime = 1; 
 
 
     private void Awake() 
@@ -60,7 +62,7 @@ public class Enemy : NetworkBehaviour
     public void Die()
     {
         // Handle death logic here
-        //enemyAnimation.Die();
+        enemyAnimation.SetState(EnemyAnimationState.Death);
         NetworkObject lootDrop = Instantiate(enemyType.loot, transform.position, Quaternion.identity);
         ClearBody(gameObject);
     }
@@ -85,7 +87,8 @@ public class Enemy : NetworkBehaviour
                 break;
         }
 
-        //enemyAnimation.Attack();
+        enemyAnimation.SetState(EnemyAnimationState.Attack);
+        StartCoroutine(UnlockAfterAnimation(attackAniTime));
         canAttack = false;
         StartCoroutine(AttackCooldown(enemyType.attackCooldown));
     }
@@ -125,13 +128,17 @@ public class Enemy : NetworkBehaviour
 
     IEnumerator AttackCooldown(float cooldown)
     {
-        //enemyAnimation.Idle();
         yield return new WaitForSeconds(cooldown);
         canAttack = true;
         enemyMovement.canMove = true;
-        //enemyAnimation.Run();
-    }
+        enemyAnimation.SetState(EnemyAnimationState.Run);
 
+    }
+    private IEnumerator UnlockAfterAnimation(float animationTime)
+    {
+        yield return new WaitForSeconds(animationTime);
+        enemyAnimation.Unlock();
+    }
     IEnumerator ClearBody(GameObject enemy)
     {
         yield return new WaitForSeconds(2f);

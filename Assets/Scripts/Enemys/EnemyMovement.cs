@@ -1,6 +1,8 @@
 using UnityEngine;
 using FishNet.Object;
 using UnityEngine.AI;
+using System.Runtime.CompilerServices;
+using UnityEngine.InputSystem.XR.Haptics;
 
 public class EnemyMovement : NetworkBehaviour
 {
@@ -9,10 +11,13 @@ public class EnemyMovement : NetworkBehaviour
     private NavMeshAgent agent;
     public bool canMove = true;
 
+    private EnemyAnimation enemyAnimation;
+
     private void Awake() 
     { 
         typeData = GetComponent<Enemy>().enemyType;
         agent = GetComponent<NavMeshAgent>();
+        enemyAnimation = GetComponent<EnemyAnimation>();
 
         agent.speed = typeData.speed;
         agent.stoppingDistance = typeData.attackRange - 2f;
@@ -44,7 +49,18 @@ public class EnemyMovement : NetworkBehaviour
         if (target != null)
         {
             Vector3 direction = (target.transform.position - transform.position).normalized;
-            if (!canMove) return;
+            if (!enemyAnimation.CurrentState.Equals(EnemyAnimationState.Attack) && !enemyAnimation.CurrentState.Equals(EnemyAnimationState.Death))
+            {
+                if(canMove)
+                    enemyAnimation.SetState(EnemyAnimationState.Run);
+                else
+                    enemyAnimation.SetState(EnemyAnimationState.Idle);
+            }
+            if (!canMove)
+            {
+                enemyAnimation.SetState(EnemyAnimationState.Idle);
+                return;
+            }
             agent.SetDestination(target.position);
         }
     }
