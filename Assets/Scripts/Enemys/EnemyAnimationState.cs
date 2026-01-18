@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// List of all Enemy Animation States, can be expanded later on 
+/// </summary>
 public enum EnemyAnimationState 
 {
     Idle = 0,

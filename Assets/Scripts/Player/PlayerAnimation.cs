@@ -1,42 +1,45 @@
-using UnityEngine;
 using FishNet.Object;
-using FishNet.Component.Animating;
+using UnityEngine;
 
-public class EnemyAnimation : NetworkBehaviour
+public class PlayerAnimation : NetworkBehaviour
 {
-    // References to Animator component and Enemies current State
+    // References to Animator component and Players current State
     private Animator animator;
-    private EnemyAnimationState currentState;
+    private PlayerAnimationState currentState;
 
     // Cached hash to avoid repeated string lookup
     private static readonly int AniStateHash = Animator.StringToHash("AniState");
 
     // readonly access to the current animation state
-    public EnemyAnimationState CurrentState => currentState;
+    public PlayerAnimationState CurrentState => currentState;
 
-    // Lock to prevent overrides 
-   private bool isLocked => currentState == EnemyAnimationState.Attack || currentState ==  EnemyAnimationState.Death;
+    // Prevents state changes while Player is in a locked animation
+    private bool isLocked => currentState == PlayerAnimationState.Death;
 
-    private void Awake() 
+    private void Awake()
     {
-        // get animator on initialzation
+        // get animator on initialzation 
         animator = GetComponent<Animator>();
     }
+
     /// <summary>
-    /// Set Enemy animation state on server and sync with clients
+    /// Set player animation state on server and sync with clients
     /// </summary>
     /// <param name="state"></param>
-    /// <param name="forceChange">ignore lock and state checks</param>
+    /// <param name="forceChange">Ignore lock and  state checks</param>
+
     [Server]
-    public void SetState(EnemyAnimationState state, bool forceChange = false)
+    public void SetState(PlayerAnimationState state, bool forceChange = false)
     {
-        // ignore redundant state changes unless forced
+        // Ignore redunant state changes unless forced
         if(!forceChange && (currentState == state || isLocked))
             return;
 
         currentState = state;
+
         // Update animation state on all clients
         RpcSetAnimationState((int)state);
+
     }
     /// <summary>
     /// Applies animation state to Animator on all observing clients
@@ -48,10 +51,11 @@ public class EnemyAnimation : NetworkBehaviour
         animator.SetInteger(AniStateHash, state);
     }
     /// <summary>
-    /// Unlocks animation state and forces enemy to "Idle" state
+    /// Unlocks animation state and forces player to Idle state
     /// </summary>
     public void Unlock()
     {
-        SetState(EnemyAnimationState.Idle, true);
+        SetState(PlayerAnimationState.Idle, true);
     }
+
 }

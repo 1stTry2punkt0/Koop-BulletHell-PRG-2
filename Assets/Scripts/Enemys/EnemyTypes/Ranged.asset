@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Ranged
   m_EditorClassIdentifier: 
   speed: 3
-  health: 10
+  health: 5
   damage: 1
   attackType: 1
-  attackRange: 10
+  attackRange: 5
   attackCooldown: 3
   loot: {fileID: 8083813632578074529, guid: 7a785bf8117d51c44a4a0d4befd204a6, type: 3}
   projectile: {fileID: 6027824633851036238, guid: dc2ecf204031b224cbdf3a6b0c3557d0, type: 3}

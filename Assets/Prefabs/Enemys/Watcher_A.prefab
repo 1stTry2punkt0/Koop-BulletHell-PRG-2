@@ -153,6 +153,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7692026817905738519, guid: b91187a9debded54988c89438ac8b3f6, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7692026817905738519, guid: b91187a9debded54988c89438ac8b3f6, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 4973ad056749a5c49ad60dacc581b405, type: 2}
@@ -247,7 +251,7 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 112
@@ -271,10 +275,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.32121655
-  m_Height: 0.71018267
+  m_Radius: 0.5704522
+  m_Height: 1.1409044
   m_Direction: 1
-  m_Center: {x: -0.0037638545, y: 0.46737468, z: 0.18254736}
+  m_Center: {x: 0.024246931, y: 0.6152797, z: 0.3776101}
 --- !u!114 &-8533877169119594878
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -310,7 +314,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584329166661379175
+  _initializedTimestamp: -8584328357764712088
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0
@@ -331,7 +335,7 @@ MonoBehaviour:
   SceneId: 0
   SerializedTransformProperties:
     Position: {x: 0, y: 0, z: 0}
-    Rotation: {x: 0, y: -0.008726465, z: 0, w: 0.999962}
+    Rotation: {x: 0, y: 0, z: 0, w: 1}
     Scale: {x: 1, y: 1, z: 1}
     IsValid: 1
 --- !u!114 &6844264400150208096

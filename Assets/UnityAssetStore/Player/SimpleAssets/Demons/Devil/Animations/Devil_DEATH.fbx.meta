@@ -1,5 +1,12 @@
 fileFormatVersion: 2
 guid: 8b5ee12a7f43d764fbdf72f4abeaf59f
+AssetOrigin:
+  serializedVersion: 1
+  productId: 313145
+  packageName: Demons army - Devil
+  packageVersion: 1.0
+  assetPath: Assets/SimpleAssets/Demons/Devil/Animations/Devil_DEATH.fbx
+  uploadId: 738394
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -16,8 +23,6 @@ ModelImporter:
     optimizeGameObjects: 0
     removeConstantScaleCurves: 0
     motionNodeName: 
-    rigImportErrors: 
-    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
@@ -107,10 +112,3 @@ ModelImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 313145
-  packageName: Demons army - Devil
-  packageVersion: 1.0
-  assetPath: Assets/SimpleAssets/Demons/Devil/Animations/Devil_DEATH.fbx
-  uploadId: 738394

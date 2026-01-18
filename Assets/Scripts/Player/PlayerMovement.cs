@@ -30,7 +30,8 @@ public class PlayerMovement : NetworkBehaviour
     [SerializeField] LayerMask layerMask;
 
 
-    private NetworkAnimator animator;
+   // private NetworkAnimator animator;
+    private PlayerAnimation playerAnimation;
 
     private GameObject characterModel;
     readonly public SyncVar<Quaternion> syncRotation = new SyncVar<Quaternion>();
@@ -40,6 +41,7 @@ public class PlayerMovement : NetworkBehaviour
     public float CamFov { get; private set; }
     public float CamAspect { get; private set; }
 
+    readonly public SyncVar<bool> isMoving = new SyncVar<bool>();
     public override void OnStartServer()
     {
         base.OnStartServer();
@@ -66,6 +68,7 @@ public class PlayerMovement : NetworkBehaviour
         playerName.Value = "Player_" + Owner.ClientId;
 
         syncRotation.OnChange += OnRotationChanged;
+        isMoving.OnChange += OnIsMovingChanged;
 
         //playerColor.OnChange += OnColorChange;
         //playerColor.Value = new Color(Random.value, Random.value, Random.value);
@@ -83,11 +86,12 @@ public class PlayerMovement : NetworkBehaviour
         //spawner = GetComponent<ProjectileSpawner>();
 
         //set spawn position
-        SetInitialPositionServer(new Vector3(Random.Range(-3f, 3f), 6.5f, Random.Range(-3f, 3f)));
+        SetInitialPositionServer(new Vector3(Random.Range(-3f, 3f), 0f, Random.Range(-3f, 3f)));
         //set y position to 6.5f to avoid spawning inside the ground
-        transform.position = new Vector3(transform.position.x, 6.5f, transform.position.z);
+        transform.position = new Vector3(transform.position.x, 0f, transform.position.z);
 
-        animator = GetComponent<NetworkAnimator>();
+       // animator = GetComponent<NetworkAnimator>();
+        playerAnimation = GetComponent<PlayerAnimation>();
         characterModel = transform.GetChild(0).gameObject;
     }
     /// <summary>
@@ -193,10 +197,11 @@ public class PlayerMovement : NetworkBehaviour
 
         // Apply movement to server-side position
         transform.position += movement;
+        isMoving.Value = true;
 
         
-
-        animator.SetTrigger("Run");
+       // playerAnimation.SetState(PlayerAnimationState.Run);
+       // animator.SetTrigger("Run");
         // Rotate character model to face movement direction
         Quaternion targetRotation = Quaternion.LookRotation(movement);
         characterModel.transform.rotation = Quaternion.Slerp(characterModel.transform.rotation, targetRotation, 0.2f);
@@ -213,7 +218,7 @@ public class PlayerMovement : NetworkBehaviour
     [ServerRpc]
     private void GoIdle()
     {
-        animator.Play("Idle");
+        isMoving.Value = false; 
     }
 
     // First parameter MUST be NetworkConnection for a TargetRpc
@@ -300,5 +305,19 @@ public class PlayerMovement : NetworkBehaviour
     public void OnHealthChange(int prev, int next, bool asServer)
     {
         healthBar.fillAmount = playerHealth.Value / 100f;
+    }
+
+    private void OnIsMovingChanged(bool perv, bool next,  bool asServer)
+    {
+        if(playerAnimation == null)
+            return;
+
+        if(playerAnimation.CurrentState == PlayerAnimationState.Death)
+            return;
+
+        if (next)
+            playerAnimation.SetState(PlayerAnimationState.Run);
+        else
+            playerAnimation.SetState(PlayerAnimationState.Idle);
     }
 }
