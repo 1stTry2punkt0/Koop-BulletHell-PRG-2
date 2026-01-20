@@ -16,6 +16,8 @@ public class Enemy : NetworkBehaviour
     [Header("Animation Settings")]
     [SerializeField] private float attackAniTime = 1; 
 
+    [SerializeField] private RedDragonAttack redDragonAttack;
+
 
     private void Awake() 
     {
@@ -85,6 +87,14 @@ public class Enemy : NetworkBehaviour
                 // Implement charge attack logic
                 ChargeAttack();
                 break;
+            case AttackType.Boss:
+                if (redDragonAttack != null)
+                {
+                    canAttack = false;
+                    redDragonAttack.PerformAttack();
+                    return;
+                }
+                break;
         }
 
         enemyAnimation.SetState(EnemyAnimationState.Attack);
@@ -103,6 +113,7 @@ public class Enemy : NetworkBehaviour
         
         if (enemyType.boss)
         {
+            
             // Shoot multiple projectiles in a spread
             int projectileCount = 5;
             float spreadAngle = 30f; // Total spread angle in degrees
@@ -126,7 +137,7 @@ public class Enemy : NetworkBehaviour
 
     }
 
-    IEnumerator AttackCooldown(float cooldown)
+    public IEnumerator AttackCooldown(float cooldown)
     {
         yield return new WaitForSeconds(cooldown);
         canAttack = true;

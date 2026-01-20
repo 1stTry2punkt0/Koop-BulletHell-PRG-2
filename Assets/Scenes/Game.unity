@@ -9477,6 +9477,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 88233695}
     - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
+      propertyPath: waveEnemySetters.Array.data[0].bossWave
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
+      propertyPath: waveEnemySetters.Array.data[0].waveDuration
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
       propertyPath: waveEnemySetters.Array.data[0].enemies.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -9507,7 +9515,7 @@ PrefabInstance:
     - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
       propertyPath: waveEnemySetters.Array.data[0].enemies.Array.data[0].enemyPrefab
       value: 
-      objectReference: {fileID: 5706275932958446658, guid: f312d97984455cd4fb54e6b236820c0a, type: 3}
+      objectReference: {fileID: -8533877169119594878, guid: 587f8c64d5d52e44ea3834f44de73314, type: 3}
     - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
       propertyPath: waveEnemySetters.Array.data[1].enemies.Array.data[0].enemyPrefab
       value: 
