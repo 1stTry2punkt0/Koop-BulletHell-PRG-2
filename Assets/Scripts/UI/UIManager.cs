@@ -9,32 +9,33 @@ public class UIManager : MonoBehaviour
     public static UIManager Instance;
 
     [Header("UI Elements")]
-    [SerializeField] GameObject AlphaBlock;
+    [SerializeField] GameObject alphaBlock;
     private Coroutine hideAlphaBlock;
 
-    [SerializeField] TMPro.TMP_Text ScoreText;
+    [SerializeField] TMPro.TMP_Text scoreText;
 
-    [SerializeField] GameObject BossUI;
-    [SerializeField] GameObject BossHealthbar;
+    [SerializeField] GameObject bossUI;
+    [SerializeField] GameObject bossHealthbar;
 
     [SerializeField] GameObject EXPBar;
 
     [Header("Health")]
-    [SerializeField] Transform HealthContainer;
-    [SerializeField] Sprite Health;
-    [SerializeField] Sprite NoHealth;
-    [SerializeField] GameObject HealthPrefab;
+    [SerializeField] Transform healthContainer;
+    [SerializeField] Sprite health;
+    [SerializeField] Sprite noHealth;
+    [SerializeField] GameObject healthPrefab;
     private List<GameObject> healthIcons = new List<GameObject>();
 
 
     [Header("Rewards")]
-    [SerializeField] GameObject RewardBar;
+    [SerializeField] GameObject rewardBar;
     private List<GameObject> rewardItems = new List<GameObject>();
-    [SerializeField] GameObject BossRewardPrefab;
-    [SerializeField] GameObject LevelRewardPrefab;
+    [SerializeField] GameObject rewardIconPrefab;
+    [SerializeField] Sprite levelReward;
+    [SerializeField] Sprite bossReward;
 
     [Header("Level Up Menu")]
-    [SerializeField] GameObject LevelUpMenu;
+    [SerializeField] GameObject levelUpMenu;
     [SerializeField] List<GameObject> levelUpOptions = new List<GameObject>();
      
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -55,7 +56,7 @@ public class UIManager : MonoBehaviour
       /*  UpdateScore(0);
         UpdateHealth(2, 3);
         AddRewardItem(false);
-        AddRewardItem(false);
+        AddRewardItem(true);
         UpdateEXP(0.1f);
         ActivateBossUI("Your Father");
         UpdateBossHP(0.8f); */
@@ -63,7 +64,7 @@ public class UIManager : MonoBehaviour
 
     public void UpdateScore(int score)
     {
-        ScoreText.text = "Score: " + score.ToString();
+        scoreText.text = "Score: " + score.ToString();
     }
 
     public void UpdateHealth(int currentHealth, int maxHealth)
@@ -77,15 +78,15 @@ public class UIManager : MonoBehaviour
         // Create new health icons
         for (int i = 0; i < maxHealth; i++)
         {
-            GameObject icon = Instantiate(HealthPrefab, HealthContainer);
+            GameObject icon = Instantiate(healthPrefab, healthContainer);
             
             if (i < currentHealth)
             {
-                icon.GetComponent<UnityEngine.UI.Image>().sprite = Health;
+                icon.GetComponent<UnityEngine.UI.Image>().sprite = health;
             }
             else
             {
-                icon.GetComponent<UnityEngine.UI.Image>().sprite = NoHealth;
+                icon.GetComponent<UnityEngine.UI.Image>().sprite = noHealth;
             }
             healthIcons.Add(icon);
         }
@@ -96,11 +97,13 @@ public class UIManager : MonoBehaviour
         GameObject rewardItem;
         if (isBossReward)
         {
-            rewardItem = Instantiate(BossRewardPrefab, RewardBar.transform);
+            rewardItem = Instantiate(rewardIconPrefab, rewardBar.transform);
+            rewardItem.GetComponent<UnityEngine.UI.Image>().sprite = bossReward;
         }
         else
         {
-            rewardItem = Instantiate(LevelRewardPrefab, RewardBar.transform);
+            rewardItem = Instantiate(rewardIconPrefab, rewardBar.transform);
+            rewardItem.GetComponent<UnityEngine.UI.Image>().sprite = levelReward;
         }
         rewardItems.Add(rewardItem);
     }
@@ -121,46 +124,46 @@ public class UIManager : MonoBehaviour
 
     public void ActivateBossUI(string name)
     {
-        BossUI.SetActive(true);
-        BossUI.GetComponentInChildren<TMPro.TMP_Text>().text = name;
+        bossUI.SetActive(true);
+        bossUI.GetComponentInChildren<TMPro.TMP_Text>().text = name;
     }
 
     public void DisableBossUI()
     {
-        BossHealthbar.SetActive(false);
+        bossHealthbar.SetActive(false);
     }
 
     public void UpdateBossHP(float perc)
     {
-        BossHealthbar.GetComponentInChildren<UnityEngine.UI.Image>().fillAmount = perc;
+        bossHealthbar.GetComponentInChildren<UnityEngine.UI.Image>().fillAmount = perc;
     }
 
     public List<GameObject> ActivateLevelUpMenu()
     {
-        LevelUpMenu.SetActive(true);
+        levelUpMenu.SetActive(true);
 
         return levelUpOptions;
     }
     public void DeactivateLevelUpMenu()
     {
-        LevelUpMenu.SetActive(false);
+        levelUpMenu.SetActive(false);
     }
 
     public void ShowAlphaBlock()
     {
-        if (AlphaBlock == null) return;
+        if (alphaBlock == null) return;
         if (hideAlphaBlock != null)
         {
             StopCoroutine(hideAlphaBlock);
             hideAlphaBlock = null;
         }
-        AlphaBlock.SetActive(true);
+        alphaBlock.SetActive(true);
         hideAlphaBlock = StartCoroutine(HideAlphaBlock());
     }
 
     IEnumerator HideAlphaBlock()
     {
         yield return new WaitForSeconds(1.5f);
-        AlphaBlock.SetActive(false);
+        alphaBlock.SetActive(false);
     }
 }
