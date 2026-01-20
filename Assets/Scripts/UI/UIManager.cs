@@ -37,7 +37,14 @@ public class UIManager : MonoBehaviour
     [Header("Level Up Menu")]
     [SerializeField] GameObject levelUpMenu;
     [SerializeField] List<GameObject> levelUpOptions = new List<GameObject>();
-     
+
+    [Header("End Screen")]
+    [SerializeField] GameObject endScreen;
+    [SerializeField] TMPro.TMP_Text resultText;
+    [SerializeField] Transform playerScores;
+    [SerializeField] Transform Leaderboard;
+    [SerializeField] GameObject playerScorePrefab;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
     {
@@ -147,6 +154,43 @@ public class UIManager : MonoBehaviour
     public void DeactivateLevelUpMenu()
     {
         levelUpMenu.SetActive(false);
+    }
+
+    public void ActivateEndScreen(bool isWin)
+    {
+        endScreen.SetActive(true);
+        if (isWin)
+        {
+            resultText.text = "Victory";
+        }
+        else
+        {
+            resultText.text = "Defeated";
+        }
+
+        foreach (PlayerMovement player in PlayerTracker.Players)
+        {
+            GameObject score = Instantiate(playerScorePrefab, playerScores);
+            score.GetComponent<TMPro.TMP_Text>().text = player.playerName + ": " + player.score.ToString();
+        }
+
+        //// Get top 4 players of the db
+        //List<(string, int)> topPlayers = DatabaseManager.Instance.GetTopPlayers(4);
+        //foreach (var (name, score) in topPlayers)
+        //{
+        //    GameObject scoreEntry = Instantiate(playerScorePrefab, Leaderboard);
+        //    scoreEntry.GetComponent<TMPro.TMP_Text>().text = name + ": " + score.ToString();
+        //}
+    }
+
+    public void NewGame()
+    {
+        Debug.Log("New Game pressed");
+    }
+
+    public void BackToLobby()
+    {
+        Debug.Log("Back to Lobby pressed");
     }
 
     public void ShowAlphaBlock()

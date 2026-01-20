@@ -23,6 +23,8 @@ public class PlayerMovement : NetworkBehaviour
 
     //readonly public SyncVar<Color> playerColor = new SyncVar<Color>();
 
+    readonly public SyncVar<int> score = new SyncVar<int>();
+
     readonly public SyncVar<int> playerHealth = new SyncVar<int>();
     public UnityEngine.UI.Image healthBar;
     private bool isOnCD = false;

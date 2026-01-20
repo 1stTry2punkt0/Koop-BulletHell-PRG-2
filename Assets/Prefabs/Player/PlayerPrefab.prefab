@@ -364,10 +364,10 @@ GameObject:
   - component: {fileID: 7404104124376815805}
   - component: {fileID: 3484095658981735308}
   - component: {fileID: 3962819400223071405}
-  - component: {fileID: 6665481258672193956}
   - component: {fileID: 547811204195479866}
   - component: {fileID: 5909595638562666790}
   - component: {fileID: 3765890326496849827}
+  - component: {fileID: 6665481258672193956}
   - component: {fileID: -2092582727301848333}
   - component: {fileID: 6867257734600202316}
   - component: {fileID: 5794475697297054355}
@@ -499,27 +499,6 @@ MonoBehaviour:
     X: 0
     Y: 0
     Z: 0
---- !u!114 &6665481258672193956
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4728946735846873588}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b923df0814ffcf64fa6d208b5ab60ead, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _componentIndexCache: 1
-  _addedNetworkObject: {fileID: 3484095658981735308}
-  _networkObjectCache: {fileID: 3484095658981735308}
-  speed: 5
-  nameTMP: {fileID: 755546594789985595}
-  healthBar: {fileID: 4411544442096424095, guid: d15fdd3954f5283458804678769cc4d2, type: 3}
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 24576
 --- !u!114 &547811204195479866
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -587,6 +566,27 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.7140014, y: 1.4464368, z: 1}
   m_Center: {x: 0.017439008, y: 0.70453256, z: 0}
+--- !u!114 &6665481258672193956
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4728946735846873588}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b923df0814ffcf64fa6d208b5ab60ead, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 1
+  _addedNetworkObject: {fileID: 3484095658981735308}
+  _networkObjectCache: {fileID: 3484095658981735308}
+  speed: 5
+  nameTMP: {fileID: 755546594789985595}
+  healthBar: {fileID: 4411544442096424095, guid: d15fdd3954f5283458804678769cc4d2, type: 3}
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 24576
 --- !u!114 &-2092582727301848333
 MonoBehaviour:
   m_ObjectHideFlags: 0
