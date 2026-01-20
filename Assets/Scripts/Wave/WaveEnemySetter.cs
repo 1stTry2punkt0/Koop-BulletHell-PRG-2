@@ -22,4 +22,8 @@ public class WaveEnemySetter
 
     [Tooltip("Spawn interval in seconds")]
     public float spawnInterval = 0.5f;
+
+    [Header("Boss Wave Settings")]
+    public bool useTimer; // Boss Wave has a time limit
+    public bool useBossHealth; // Boss Wave ends when boss dies
 }

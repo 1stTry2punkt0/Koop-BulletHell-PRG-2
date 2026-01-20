@@ -9489,15 +9489,31 @@ PrefabInstance:
       objectReference: {fileID: 88233695}
     - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
       propertyPath: waveEnemySetters.Array.data[0].bossWave
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
+      propertyPath: waveEnemySetters.Array.data[0].useTimer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
+      propertyPath: waveEnemySetters.Array.data[1].bossWave
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
       propertyPath: waveEnemySetters.Array.data[0].waveDuration
-      value: 1000
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
       propertyPath: waveEnemySetters.Array.data[0].spawnInterval
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
+      propertyPath: waveEnemySetters.Array.data[0].useBossHealth
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
+      propertyPath: waveEnemySetters.Array.data[1].useBossHealth
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
       propertyPath: waveEnemySetters.Array.data[0].enemies.Array.size
@@ -9505,7 +9521,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
       propertyPath: waveEnemySetters.Array.data[1].enemies.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
       propertyPath: waveEnemySetters.Array.data[2].enemies.Array.size

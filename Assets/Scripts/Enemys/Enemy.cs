@@ -18,6 +18,9 @@ public class Enemy : NetworkBehaviour
     [Header("Animation Settings")]
     [SerializeField] private float attackAniTime = 1;
 
+    public float CurrentHealth => currentHealth;
+
+    public event System.Action<Enemy> OnDeathEvent; // Notify spawner when enemy dies
     private void Awake()
     {
         currentHealth = enemyType.health;
@@ -72,6 +75,9 @@ public class Enemy : NetworkBehaviour
         // prevent calling multiple times
         if(!IsSpawned)
             return; 
+
+        // trigger death event 
+       // OnDeathEvent?.Invoke(this);
 
         // Handle death logic here
         enemyAnimation.SetState(EnemyAnimationState.Death);
@@ -172,8 +178,9 @@ public class Enemy : NetworkBehaviour
         if(enemy != null && enemy.IsSpawned)
         {
             Despawn(enemy);
-            EnemySpawner spawner = FindFirstObjectByType<EnemySpawner>();
-            spawner.UnregisterEnemy(NetworkObject);
+            /*  EnemySpawner spawner = FindFirstObjectByType<EnemySpawner>();
+              spawner.UnregisterEnemy(NetworkObject); */
+            OnDeathEvent?.Invoke(this);
         }
     }
 

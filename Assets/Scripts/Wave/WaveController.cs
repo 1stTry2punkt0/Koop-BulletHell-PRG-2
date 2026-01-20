@@ -104,21 +104,44 @@ public class WaveController : NetworkBehaviour
             if (enemySetter.bossWave)
             {
                 // Spawn only one enemy at the start of the wave
-                if (currentEnemies.Count > 0) { 
+                if (currentEnemies.Count > 0) 
+                { 
                     NetworkObject bossPrefab = currentEnemies[0].enemyPrefab;
                     enemySpawner.SpawnEnemy(bossPrefab);
+
+                    Enemy boss = enemySpawner.LastSpawnedEnemy;
+
+                    if (enemySetter.useTimer)
+                    {
+                        // wave ends on timer or boss death
+                        while (remainingWaveTime.Value > 0f && boss != null && boss.CurrentHealth > 0)
+                        {
+                            remainingWaveTime.Value -= Time.deltaTime;
+                            yield return null;
+                        }
+                    }
+                    else if (enemySetter.useBossHealth)
+                    {
+                        // wave ends when boss dies
+                        while(boss != null && boss.CurrentHealth > 0f)
+                        {
+                            yield return null;
+                        }
+                    }
                 }
             }
             else 
             {
                 // Start spawning enemies at regular intervals
                 spawnCoroutine = StartCoroutine(SpawnEnemies());
-            }
-            while (remainingWaveTime.Value > 0f)
-            {
-                // Update remaining wave time
-                remainingWaveTime.Value -= Time.deltaTime;
-                yield return null;
+
+                // Timer for normla waves
+                while (remainingWaveTime.Value > 0f)
+                {
+                    // Update remaining wave time
+                    remainingWaveTime.Value -= Time.deltaTime;
+                    yield return null;
+                }
             }
             if (spawnCoroutine != null)
             {
