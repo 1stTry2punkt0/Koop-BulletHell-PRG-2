@@ -69,10 +69,20 @@ public class Enemy : NetworkBehaviour
     [Server]
     public void Die()
     {
+        // prevent calling multiple times
+        if(!IsSpawned)
+            return; 
+
         // Handle death logic here
         enemyAnimation.SetState(EnemyAnimationState.Death);
-        NetworkObject lootDrop = Instantiate(enemyType.loot, transform.position, Quaternion.identity);
-        ClearBody(gameObject);
+        // Spawn Loot
+        if (enemyType.loot != null)
+        {
+            NetworkObject lootDrop = Instantiate(enemyType.loot, transform.position, Quaternion.identity);
+            Spawn(lootDrop);
+        }
+        // Despawn Enemy
+        StartCoroutine(ClearBody(NetworkObject));
     }
 
     [Server]
@@ -155,10 +165,16 @@ public class Enemy : NetworkBehaviour
         yield return new WaitForSeconds(animationTime);
         enemyAnimation.Unlock();
     }
-    IEnumerator ClearBody(GameObject enemy)
+    [Server]
+    IEnumerator ClearBody(NetworkObject enemy)
     {
         yield return new WaitForSeconds(2f);
-        Despawn(enemy);
+        if(enemy != null && enemy.IsSpawned)
+        {
+            Despawn(enemy);
+            EnemySpawner spawner = FindFirstObjectByType<EnemySpawner>();
+            spawner.UnregisterEnemy(NetworkObject);
+        }
     }
 
     private bool IsPlayerInCone(Transform target, float range, float angle)
@@ -237,6 +253,8 @@ public class Enemy : NetworkBehaviour
         chargeConeVisualInstance.transform.localRotation = Quaternion.identity;
     }
 
+
+    // stolen from chatgpt for debugging
 #if UNITY_EDITOR
     private void OnDrawGizmosSelected()
     {

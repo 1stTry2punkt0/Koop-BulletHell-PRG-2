@@ -184,5 +184,11 @@ public class EnemySpawner : NetworkBehaviour
         // Clear the list after despawning
         _spawnedEnemies.Clear();
     }
+
+    public void UnregisterEnemy(NetworkObject enemy)
+    {
+        _spawnedEnemies.Remove(enemy);
+    }
+
     #endregion
 }
