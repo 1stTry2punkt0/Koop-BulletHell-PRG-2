@@ -66,7 +66,8 @@ public class UIManager : MonoBehaviour
         AddRewardItem(true);
         UpdateEXP(0.1f);
         ActivateBossUI("Your Father");
-        UpdateBossHP(0.8f); */
+        UpdateBossHP(0.8f); 
+        ActivateEndScreen(true);*/
     }
 
     public void UpdateScore(int score)
@@ -181,6 +182,14 @@ public class UIManager : MonoBehaviour
         //    GameObject scoreEntry = Instantiate(playerScorePrefab, Leaderboard);
         //    scoreEntry.GetComponent<TMPro.TMP_Text>().text = name + ": " + score.ToString();
         //}
+        DatabaseManager.Instance.FetchTopScores(4, scores =>
+        {
+            foreach (var s in scores) {
+                GameObject scoreEntry = Instantiate(playerScorePrefab, Leaderboard);
+                scoreEntry.GetComponent<TMPro.TMP_Text>().text = $"{s.name}: {s.score}";
+            }
+        });
+
     }
 
     public void NewGame()

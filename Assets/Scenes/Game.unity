@@ -8595,6 +8595,51 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2694179848322785852, guid: 223d3016030b1814bbf7d40248078963, type: 3}
   m_PrefabInstance: {fileID: 1770568098}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1780441401
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1780441403}
+  - component: {fileID: 1780441402}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1780441402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1780441401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23e74cdd833a9d4459fd6f7cfef9b452, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseUrl: http://localhost/bulletHell
+--- !u!4 &1780441403
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1780441401}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 644.9166, y: 443.3484, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1797696231
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10368,7 +10413,11 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 6644007494536738512, guid: ca26a838e8ec0f043a3d9a48317f9a13, type: 3}
+    - {fileID: 6341631257099318270, guid: ca26a838e8ec0f043a3d9a48317f9a13, type: 3}
+    - {fileID: 872317600837240885, guid: ca26a838e8ec0f043a3d9a48317f9a13, type: 3}
+    - {fileID: 2404358361863203820, guid: ca26a838e8ec0f043a3d9a48317f9a13, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ca26a838e8ec0f043a3d9a48317f9a13, type: 3}
@@ -10412,3 +10461,4 @@ SceneRoots:
   - {fileID: 148123401}
   - {fileID: 591643523}
   - {fileID: 910178239}
+  - {fileID: 1780441403}
