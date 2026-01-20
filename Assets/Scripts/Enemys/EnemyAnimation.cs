@@ -15,7 +15,9 @@ public class EnemyAnimation : NetworkBehaviour
     public EnemyAnimationState CurrentState => currentState;
 
     // Lock to prevent overrides 
-   private bool isLocked => currentState == EnemyAnimationState.Attack || currentState ==  EnemyAnimationState.Death;
+    private bool isLocked => currentState == EnemyAnimationState.Attack || currentState == EnemyAnimationState.Death || 
+                             currentState == EnemyAnimationState.ChargedWindup || currentState == EnemyAnimationState.ChargedAttack;
+
 
     private void Awake() 
     {
@@ -53,5 +55,9 @@ public class EnemyAnimation : NetworkBehaviour
     public void Unlock()
     {
         SetState(EnemyAnimationState.Idle, true);
+    }
+    public void UnlockCharge()
+    {
+        SetState(EnemyAnimationState.ChargedAttack, true);
     }
 }

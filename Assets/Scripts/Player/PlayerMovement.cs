@@ -252,8 +252,8 @@ public class PlayerMovement : NetworkBehaviour
         //playerColor.Value = new Color(Random.value, Random.value, Random.value);
     }
 
-    [ServerRpc]
-    private void ChangeHealth(int amount)
+    [Server]
+    public void ChangeHealth(int amount)
     {
         playerHealth.Value -= amount;
         if(playerHealth.Value <= 0)
@@ -262,7 +262,6 @@ public class PlayerMovement : NetworkBehaviour
             transform.position = Vector3.zero;
         }
     }
-
     public void OnSpeedChange(float prev, float next, bool asServer)
     {
         // Logs whenever the speed SyncVar changes

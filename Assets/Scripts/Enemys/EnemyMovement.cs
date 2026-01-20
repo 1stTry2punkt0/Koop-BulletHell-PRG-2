@@ -49,7 +49,8 @@ public class EnemyMovement : NetworkBehaviour
         if (target != null)
         {
             Vector3 direction = (target.transform.position - transform.position).normalized;
-            if (!enemyAnimation.CurrentState.Equals(EnemyAnimationState.Attack) && !enemyAnimation.CurrentState.Equals(EnemyAnimationState.Death))
+            if (!enemyAnimation.CurrentState.Equals(EnemyAnimationState.Attack) && !enemyAnimation.CurrentState.Equals(EnemyAnimationState.Death)
+             && !enemyAnimation.CurrentState.Equals(EnemyAnimationState.ChargedWindup) && !enemyAnimation.CurrentState.Equals(EnemyAnimationState.ChargedAttack))
             {
                 if(canMove)
                     enemyAnimation.SetState(EnemyAnimationState.Run);
