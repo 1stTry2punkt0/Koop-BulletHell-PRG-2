@@ -27,5 +27,6 @@ public enum AttackType
 {
     Charge,
     Ranged,
-    Melee
+    Melee,
+    Boss
 }

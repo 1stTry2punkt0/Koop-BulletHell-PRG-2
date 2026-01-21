@@ -8,6 +8,7 @@ public class Enemy : NetworkBehaviour
     public EnemyType enemyType;
     private EnemyMovement enemyMovement;
     private EnemyAnimation enemyAnimation;
+    private RedDragonAttack bossAttack;
 
     private float currentHealth;
 
@@ -26,6 +27,7 @@ public class Enemy : NetworkBehaviour
         currentHealth = enemyType.health;
         enemyMovement = GetComponent<EnemyMovement>();
         enemyAnimation = GetComponent<EnemyAnimation>();
+        bossAttack = GetComponent<RedDragonAttack>();
 
         if(enemyType.attackType == AttackType.Charge && enemyType.chargeConeVisualPrefab != null )
         {
@@ -86,7 +88,7 @@ public class Enemy : NetworkBehaviour
         {
             NetworkObject lootDrop = Instantiate(enemyType.loot, transform.position, Quaternion.identity);
             Spawn(lootDrop);
-        }
+        }  
         // Despawn Enemy
         StartCoroutine(ClearBody(NetworkObject));
     }
@@ -117,6 +119,11 @@ public class Enemy : NetworkBehaviour
                 ChargeAttack();
                 enemyAnimation.SetState(EnemyAnimationState.ChargedWindup);
                 break;
+            case AttackType.Boss:
+                bossAttack.PerformAttack();
+                break;
+                // Boss attack logic
+
         }
 
     }
@@ -158,7 +165,7 @@ public class Enemy : NetworkBehaviour
         StartCoroutine(ChargeAttackRoutine());
     }
 
-    IEnumerator AttackCooldown(float cooldown)
+    public IEnumerator AttackCooldown(float cooldown)
     {
         yield return new WaitForSeconds(cooldown);
         canAttack = true;
