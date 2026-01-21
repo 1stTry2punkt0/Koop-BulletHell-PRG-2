@@ -20,9 +20,16 @@ public class WaveController : NetworkBehaviour
     private readonly SyncVar<int> currentWave = new();
     private readonly SyncVar<float> betweenWaveTime = new();
 
+    // Boss wave exclusive SyncVars
+    private readonly SyncVar<bool> bossUsesTimer = new();
+    private readonly SyncVar<bool> isBossWave = new();
+
     // Script references
     [Header("References")]
     [SerializeField] private EnemySpawner enemySpawner;
+
+    public bool BossUsesTimer => bossUsesTimer.Value;
+    public bool IsBossWave => isBossWave.Value;
 
     // UI Accessors to display wave info
     [Header("UI Access")]
@@ -87,6 +94,10 @@ public class WaveController : NetworkBehaviour
 
             // Get enemy settings for the current wave
             WaveEnemySetter enemySetter = GetEnemiesForWave(wave);
+
+            // check if boss wave and if timer is active in boss wave or not
+            isBossWave.Value = enemySetter.bossWave; 
+            bossUsesTimer.Value = enemySetter.useTimer;
            
             currentEnemies = enemySetter.enemies;
             totalTickets = 0; // Reset total tickets for the wave

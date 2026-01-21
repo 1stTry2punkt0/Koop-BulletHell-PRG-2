@@ -9488,6 +9488,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 88233695}
     - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
+      propertyPath: waveEnemySetters.Array.data[0].bossName
+      value: test
+      objectReference: {fileID: 0}
+    - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
       propertyPath: waveEnemySetters.Array.data[0].bossWave
       value: 1
       objectReference: {fileID: 0}
@@ -9496,8 +9500,24 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
+      propertyPath: waveEnemySetters.Array.data[1].bossName
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
       propertyPath: waveEnemySetters.Array.data[1].bossWave
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
+      propertyPath: waveEnemySetters.Array.data[1].useTimer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
+      propertyPath: waveEnemySetters.Array.data[2].bossName
+      value: test
+      objectReference: {fileID: 0}
+    - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
+      propertyPath: waveEnemySetters.Array.data[2].bossWave
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
       propertyPath: waveEnemySetters.Array.data[0].waveDuration
@@ -9516,12 +9536,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
+      propertyPath: waveEnemySetters.Array.data[2].useBossHealth
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
       propertyPath: waveEnemySetters.Array.data[0].enemies.Array.size
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
       propertyPath: waveEnemySetters.Array.data[1].enemies.Array.size
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
       propertyPath: waveEnemySetters.Array.data[2].enemies.Array.size
@@ -9548,6 +9572,10 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
+      propertyPath: waveEnemySetters.Array.data[1].enemies.Array.data[2].tickets
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
       propertyPath: waveEnemySetters.Array.data[2].enemies.Array.data[0].tickets
       value: 1
       objectReference: {fileID: 0}
@@ -9571,6 +9599,10 @@ PrefabInstance:
       propertyPath: waveEnemySetters.Array.data[1].enemies.Array.data[1].enemyPrefab
       value: 
       objectReference: {fileID: -8533877169119594878, guid: 7dd14a52f9c0d5c4eada0cd677838c60, type: 3}
+    - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
+      propertyPath: waveEnemySetters.Array.data[1].enemies.Array.data[2].enemyPrefab
+      value: 
+      objectReference: {fileID: 7333038170092884059, guid: 151a02d55e86d1b41802f0ff1ca44ad0, type: 3}
     - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
       propertyPath: waveEnemySetters.Array.data[2].enemies.Array.data[0].enemyPrefab
       value: 
