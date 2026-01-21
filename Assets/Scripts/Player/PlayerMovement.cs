@@ -11,6 +11,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.UIElements;
 using Unity.VisualScripting;
+using System.Collections;
 
 public class PlayerMovement : NetworkBehaviour
 {
@@ -44,11 +45,24 @@ public class PlayerMovement : NetworkBehaviour
     public float CamAspect { get; private set; }
 
     readonly public SyncVar<bool> isMoving = new SyncVar<bool>();
+
+    private static int spawnGraceCount = 0;
+    [SerializeField] private float spawnCollisionIgnore = 0.5f;
     public override void OnStartServer()
     {
         base.OnStartServer();
         // Register this player on the server
         PlayerTracker.RegisterPlayer(this);
+
+        // Set spawn position
+        Vector3 spawnPos = new Vector3(Random.Range(-3f, 3f), 1f, Random.Range(-3f, 3f));
+
+        transform.position = spawnPos;
+
+        // temporary ignore collison to prevent overlapping player
+        StartCoroutine(SpawnCollisionGrace());
+
+
     }
 
     public override void OnStopServer()
@@ -87,10 +101,10 @@ public class PlayerMovement : NetworkBehaviour
 
         //spawner = GetComponent<ProjectileSpawner>();
 
-        //set spawn position
-        SetInitialPositionServer(new Vector3(Random.Range(-3f, 3f), 0f, Random.Range(-3f, 3f)));
-        //set y position to 6.5f to avoid spawning inside the ground
-        transform.position = new Vector3(transform.position.x, 0f, transform.position.z);
+        // set spawn position
+     //   SetInitialPositionServer(new Vector3(Random.Range(-3f, 3f), 1f, Random.Range(-3f, 3f)));
+        // set y position to 1f to avoid spawning inside the ground
+     //   transform.position = new Vector3(transform.position.x, 1f, transform.position.z);
 
        // animator = GetComponent<NetworkAnimator>();
         playerAnimation = GetComponent<PlayerAnimation>();
@@ -100,12 +114,33 @@ public class PlayerMovement : NetworkBehaviour
     /// send initial position to server for enemy spawning logic
     /// </summary>
     /// <param name="position"></param>
-    [ServerRpc]
+ /*   [ServerRpc]
     public void SetInitialPositionServer(Vector3 position)
     {
         transform.position = position;
-    }
+    } */
+    private IEnumerator SpawnCollisionGrace()
+    {
+        int playerLayer = LayerMask.NameToLayer("Player");
 
+        spawnGraceCount++;
+
+
+        if (spawnGraceCount == 1)
+        {
+        // disable player to player collsion 
+        Physics.IgnoreLayerCollision(playerLayer, playerLayer, true);
+        }
+
+        yield return new WaitForSeconds(spawnCollisionIgnore);
+
+        spawnGraceCount--;
+        if (spawnGraceCount == 0)
+        {
+            // enable player to player collison
+            Physics.IgnoreLayerCollision(playerLayer, playerLayer, false);
+        }
+    }
     public override void OnStartClient()
     {
         base.OnStartClient();
@@ -117,6 +152,14 @@ public class PlayerMovement : NetworkBehaviour
         //OnColorChange(default, playerColor.Value, false);
         OnHealthChange(default, playerHealth.Value, false);
         OnRotationChanged(default, syncRotation.Value, false);
+    }
+
+    public override void OnStopClient()
+    {
+        base.OnStopClient();
+
+        // remove locally if player disconnects
+        PlayerTracker.UnregisterPlayer(this);
     }
 
     [ServerRpc]
@@ -254,8 +297,8 @@ public class PlayerMovement : NetworkBehaviour
         //playerColor.Value = new Color(Random.value, Random.value, Random.value);
     }
 
-    [ServerRpc]
-    private void ChangeHealth(int amount)
+    [Server]
+    public void ChangeHealth(int amount)
     {
         playerHealth.Value -= amount;
         if(playerHealth.Value <= 0)
@@ -264,7 +307,6 @@ public class PlayerMovement : NetworkBehaviour
             transform.position = Vector3.zero;
         }
     }
-
     public void OnSpeedChange(float prev, float next, bool asServer)
     {
         // Logs whenever the speed SyncVar changes

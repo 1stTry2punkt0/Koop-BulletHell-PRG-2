@@ -8,5 +8,7 @@ public enum EnemyAnimationState
     Idle = 0,
     Run = 1,
     Attack = 2,
-    Death = 3
+    Death = 3,
+    ChargedWindup = 4,
+    ChargedAttack = 5
 }

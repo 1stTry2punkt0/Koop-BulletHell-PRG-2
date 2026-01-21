@@ -1382,6 +1382,7 @@ GameObject:
   - component: {fileID: 40464194669897868}
   - component: {fileID: 2502943083130884920}
   - component: {fileID: 2375173450017549209}
+  - component: {fileID: -8082798431307552500}
   m_Layer: 0
   m_Name: Red
   m_TagString: Untagged
@@ -1458,7 +1459,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584333145961714607
+  _initializedTimestamp: -8584326016839823642
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0
@@ -1473,7 +1474,7 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 0
+  <PrefabId>k__BackingField: 22
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 17750771382270889216
   SceneId: 0
@@ -1545,6 +1546,24 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 6.5333357, y: 3.9380698, z: 10.510164}
   m_Center: {x: 0.111125946, y: 1.8535774, z: -1.2732306}
+--- !u!114 &-8082798431307552500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5407983508470945505}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7b21971a1e8c9c45bf9db0c6a1c539d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 2933498156239369950}
+  _networkObjectCache: {fileID: 0}
+  enemyType: {fileID: 11400000, guid: 04ee37ee9cc2cf94596845e17dc7bdec, type: 2}
+  canAttack: 1
+  attackAniTime: 1
 --- !u!1 &5480598374902927953
 GameObject:
   m_ObjectHideFlags: 0

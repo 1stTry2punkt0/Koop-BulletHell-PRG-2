@@ -20,9 +20,16 @@ public class WaveController : NetworkBehaviour
     private readonly SyncVar<int> currentWave = new();
     private readonly SyncVar<float> betweenWaveTime = new();
 
+    // Boss wave exclusive SyncVars
+    private readonly SyncVar<bool> bossUsesTimer = new();
+    private readonly SyncVar<bool> isBossWave = new();
+
     // Script references
     [Header("References")]
     [SerializeField] private EnemySpawner enemySpawner;
+
+    public bool BossUsesTimer => bossUsesTimer.Value;
+    public bool IsBossWave => isBossWave.Value;
 
     // UI Accessors to display wave info
     [Header("UI Access")]
@@ -87,6 +94,10 @@ public class WaveController : NetworkBehaviour
 
             // Get enemy settings for the current wave
             WaveEnemySetter enemySetter = GetEnemiesForWave(wave);
+
+            // check if boss wave and if timer is active in boss wave or not
+            isBossWave.Value = enemySetter.bossWave; 
+            bossUsesTimer.Value = enemySetter.useTimer;
            
             currentEnemies = enemySetter.enemies;
             totalTickets = 0; // Reset total tickets for the wave
@@ -104,21 +115,44 @@ public class WaveController : NetworkBehaviour
             if (enemySetter.bossWave)
             {
                 // Spawn only one enemy at the start of the wave
-                if (currentEnemies.Count > 0) { 
+                if (currentEnemies.Count > 0) 
+                { 
                     NetworkObject bossPrefab = currentEnemies[0].enemyPrefab;
                     enemySpawner.SpawnEnemy(bossPrefab);
+
+                    Enemy boss = enemySpawner.LastSpawnedEnemy;
+
+                    if (enemySetter.useTimer)
+                    {
+                        // wave ends on timer or boss death
+                        while (remainingWaveTime.Value > 0f && boss != null && boss.CurrentHealth > 0)
+                        {
+                            remainingWaveTime.Value -= Time.deltaTime;
+                            yield return null;
+                        }
+                    }
+                    else if (enemySetter.useBossHealth)
+                    {
+                        // wave ends when boss dies
+                        while(boss != null && boss.CurrentHealth > 0f)
+                        {
+                            yield return null;
+                        }
+                    }
                 }
             }
             else 
             {
                 // Start spawning enemies at regular intervals
                 spawnCoroutine = StartCoroutine(SpawnEnemies());
-            }
-            while (remainingWaveTime.Value > 0f)
-            {
-                // Update remaining wave time
-                remainingWaveTime.Value -= Time.deltaTime;
-                yield return null;
+
+                // Timer for normla waves
+                while (remainingWaveTime.Value > 0f)
+                {
+                    // Update remaining wave time
+                    remainingWaveTime.Value -= Time.deltaTime;
+                    yield return null;
+                }
             }
             if (spawnCoroutine != null)
             {

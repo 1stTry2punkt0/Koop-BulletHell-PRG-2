@@ -13,6 +13,14 @@ public class EnemyType : ScriptableObject
     public NetworkObject loot;
     public NetworkObject projectile;
     public bool boss;
+
+    [Header("Charge Attack Settings")]
+    public float chargeWindupTime = 3f;
+    public float chargeConeAngle = 10f;
+    public float chargeConeRange = 5f;
+    public float chargeDamage = 2f; 
+
+    public GameObject chargeConeVisualPrefab;
 }
 
 public enum AttackType

@@ -48,8 +48,21 @@ public class EnemySpawner : NetworkBehaviour
             Spawn(enemyInstance);
             // Add to spawned enemies list for tracking
             _spawnedEnemies.Add(enemyInstance);
+
+            // Subscribe to enemy Death to automatically unregister
+            Enemy enemy = enemyInstance.GetComponent<Enemy>();
+            if (enemy != null)
+                enemy.OnDeathEvent += OnEnemyDeath;
         }
 
+    }
+    public Enemy LastSpawnedEnemy
+    {
+        get
+        {
+            if(_spawnedEnemies.Count == 0) return null;
+            return _spawnedEnemies[_spawnedEnemies.Count - 1].GetComponent<Enemy>();
+        }
     }
     #endregion
 
@@ -184,5 +197,20 @@ public class EnemySpawner : NetworkBehaviour
         // Clear the list after despawning
         _spawnedEnemies.Clear();
     }
+
+    public void UnregisterEnemy(NetworkObject enemy)
+    {
+        _spawnedEnemies.Remove(enemy);
+    }
+
+    private void OnEnemyDeath(Enemy enemy)
+    {
+        if (enemy == null || enemy.NetworkObject == null)
+            return;
+
+        //Remove from spawned list 
+        _spawnedEnemies.Remove(enemy.NetworkObject);
+    }
+
     #endregion
 }
