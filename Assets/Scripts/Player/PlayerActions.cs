@@ -35,6 +35,15 @@ public class PlayerActions : NetworkBehaviour
         //attackmodifires.Add(Attackmodifire.Behind);
     }
 
+    public override void OnStartClient()
+    {
+        if (IsOwner)
+        {
+            LootManager.instance.playerActions = this;
+            LootManager.instance.StartLevelUp();
+        }
+    }
+
     private void Update() 
     {
         if(!IsOwner) return;
