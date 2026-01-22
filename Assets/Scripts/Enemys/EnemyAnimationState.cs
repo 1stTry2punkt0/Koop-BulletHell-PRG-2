@@ -10,5 +10,8 @@ public enum EnemyAnimationState
     Attack = 2,
     Death = 3,
     ChargedWindup = 4,
-    ChargedAttack = 5
+    ChargedAttack = 5,
+    SpiralAttack = 6,
+    RingAttack = 7,
+    SpreadAttack = 8
 }

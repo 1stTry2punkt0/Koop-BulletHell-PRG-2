@@ -15,9 +15,10 @@ public class EnemyAnimation : NetworkBehaviour
     public EnemyAnimationState CurrentState => currentState;
 
     // Lock to prevent overrides 
-    private bool isLocked => currentState == EnemyAnimationState.Attack || currentState == EnemyAnimationState.Death || 
-                             currentState == EnemyAnimationState.ChargedWindup || currentState == EnemyAnimationState.ChargedAttack;
-
+    private bool isLocked => currentState == EnemyAnimationState.Attack || currentState == EnemyAnimationState.Death ||
+                             currentState == EnemyAnimationState.ChargedWindup || currentState == EnemyAnimationState.ChargedAttack ||
+                             currentState == EnemyAnimationState.SpiralAttack || currentState == EnemyAnimationState.RingAttack ||
+                             currentState == EnemyAnimationState.SpreadAttack;
 
     private void Awake() 
     {

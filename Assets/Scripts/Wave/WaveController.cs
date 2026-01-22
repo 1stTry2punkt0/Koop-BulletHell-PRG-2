@@ -23,6 +23,7 @@ public class WaveController : NetworkBehaviour
     // Boss wave exclusive SyncVars
     private readonly SyncVar<bool> bossUsesTimer = new();
     private readonly SyncVar<bool> isBossWave = new();
+    private readonly SyncVar<bool> bossAlive = new();
 
     // Script references
     [Header("References")]
@@ -31,6 +32,8 @@ public class WaveController : NetworkBehaviour
     public bool BossUsesTimer => bossUsesTimer.Value;
     public bool IsBossWave => isBossWave.Value;
 
+    public bool BossAlive => bossAlive.Value;
+
     // UI Accessors to display wave info
     [Header("UI Access")]
     public float RemainingWaveTime => remainingWaveTime.Value;
@@ -38,6 +41,9 @@ public class WaveController : NetworkBehaviour
     public int TotalWaves => totalWaves;
 
     public float TimeBetweenWaves => betweenWaveTime.Value;
+
+    private readonly SyncVar<string> bossName = new();
+    public string BossName => bossName.Value;
 
     // Coroutine reference for spawning enemies
     private Coroutine spawnCoroutine;
@@ -98,6 +104,7 @@ public class WaveController : NetworkBehaviour
             // check if boss wave and if timer is active in boss wave or not
             isBossWave.Value = enemySetter.bossWave; 
             bossUsesTimer.Value = enemySetter.useTimer;
+            bossName.Value = enemySetter.bossWave ? enemySetter.bossName : "";
            
             currentEnemies = enemySetter.enemies;
             totalTickets = 0; // Reset total tickets for the wave
@@ -119,8 +126,13 @@ public class WaveController : NetworkBehaviour
                 { 
                     NetworkObject bossPrefab = currentEnemies[0].enemyPrefab;
                     enemySpawner.SpawnEnemy(bossPrefab);
+                    
+                    bossAlive.Value = true;
 
                     Enemy boss = enemySpawner.LastSpawnedEnemy;
+
+                    // Initialize boss healtbar
+                    boss.InitializeBossHealth();
 
                     if (enemySetter.useTimer)
                     {
@@ -139,6 +151,19 @@ public class WaveController : NetworkBehaviour
                             yield return null;
                         }
                     }
+
+                    if(boss != null)
+                    {
+                        Animator animator = boss.GetComponent<Animator>();
+                        if (animator != null)
+                        {
+                            float animation = animator.GetCurrentAnimatorStateInfo(0).length;
+                            yield return new WaitForSeconds(animation *2);
+                        }
+
+                    }
+                    // clear boss UI
+                    bossAlive.Value = false;
                 }
             }
             else 

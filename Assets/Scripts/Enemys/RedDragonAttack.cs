@@ -9,6 +9,12 @@ public class RedDragonAttack : NetworkBehaviour
     [SerializeField] private EnemyType typeData;
     [SerializeField] private EnemyMovement enemyMovement;
     [SerializeField] private Enemy enemy;
+    private EnemyAnimation enemyAnimation;
+
+    private void Awake()
+    {
+        enemyAnimation = GetComponent<EnemyAnimation>();
+    }
 
     public void PerformAttack()
     {
@@ -18,16 +24,20 @@ public class RedDragonAttack : NetworkBehaviour
         switch (attackType)
         {
             case 0:
+                enemyAnimation.SetState(EnemyAnimationState.SpiralAttack);
                 attackRoutine = StartCoroutine(SpiralAttack());
                 break;
             case 1:
-                RingAttack();
+                enemyAnimation.SetState(EnemyAnimationState.RingAttack);
+                attackRoutine = StartCoroutine(RingAttack());
                 break;
             case 2:
+                enemyAnimation.SetState(EnemyAnimationState.Attack);
                 attackRoutine = StartCoroutine(BeamAttack());
                 break;
             case 3:
-                SpreadAttack();
+                enemyAnimation.SetState(EnemyAnimationState.SpreadAttack);
+                attackRoutine = StartCoroutine(SpreadAttack());
                 break;
         }
 
@@ -45,10 +55,11 @@ public class RedDragonAttack : NetworkBehaviour
             duration += 0.2f;
             yield return new WaitForSeconds(0.2f);
         }
+        enemyAnimation.Unlock();
         StartCoroutine(enemy.AttackCooldown(typeData.attackCooldown));
     }
 
-    private void RingAttack()
+    IEnumerator RingAttack()
     {
         // Shoot multiple projectiles in a spread
         int projectileCount = 12;
@@ -59,7 +70,7 @@ public class RedDragonAttack : NetworkBehaviour
             Quaternion rotation = Quaternion.Euler(0, angle, 0) * Quaternion.LookRotation(enemyMovement.target.position - transform.position);
             ProjectileSpawner.Instance.SpawnProjectileServer(transform.position + transform.forward * 1.5f, rotation, 10f, 10f, 1f, false);
         }
-        StartCoroutine(enemy.AttackCooldown(typeData.attackCooldown));
+        yield return null;
     }
 
     IEnumerator BeamAttack()
@@ -71,13 +82,14 @@ public class RedDragonAttack : NetworkBehaviour
             duration += 0.2f;
             yield return new WaitForSeconds(0.2f);
         }
+        enemyAnimation.Unlock();
         StartCoroutine(enemy.AttackCooldown(typeData.attackCooldown));
     }
 
-    private void SpreadAttack()
+    IEnumerator SpreadAttack()
     {
         // Shoot multiple projectiles in a spread
-        int projectileCount = Random.Range(2,6);
+        int projectileCount = Random.Range(2, 6);
         float spreadAngle = 30f; // Total spread angle in degrees
         for (int i = 0; i < projectileCount; i++)
         {
@@ -86,7 +98,18 @@ public class RedDragonAttack : NetworkBehaviour
             ProjectileSpawner.Instance.SpawnProjectileServer(transform.position + transform.forward * 1.5f, rotation, 10f, 10f, 1f, false);
 
         }
-        StartCoroutine(enemy.AttackCooldown(typeData.attackCooldown));
+
+        yield return new WaitForSeconds(0.1f);
+
+        enemyAnimation.Unlock();
+        StartCoroutine(enemy.AttackCooldown(Mathf.Max(typeData.attackCooldown, 0.5f)));
+
     }
 
+
+    public void AttackAnimationFinished()
+    {
+        enemyAnimation.Unlock();
+        StartCoroutine(enemy.AttackCooldown(typeData.attackCooldown));
+    }
 }

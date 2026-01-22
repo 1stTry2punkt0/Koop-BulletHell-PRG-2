@@ -138,7 +138,7 @@ public class UIManager : MonoBehaviour
 
     public void DisableBossUI()
     {
-        bossHealthbar.SetActive(false);
+        bossUI.SetActive(false);
     }
 
     public void UpdateBossHP(float perc)

@@ -15,14 +15,18 @@ public class WaveUI : MonoBehaviour
         // Update wave count display
         waveCount.text = $"Wave: {waveController.CurrentWave}/{waveController.TotalWaves}";
 
-        // Hide Timer if Boss wave does not use timer 
-        if(waveController.IsBossWave && !waveController.BossUsesTimer && waveController.RemainingWaveTime > 0f)
+        // handle boss waves 
+        if (waveController.BossAlive)
         {
-            waveTimer.gameObject.SetActive(false);
-            return;
+            UIManager.Instance.ActivateBossUI(waveController.BossName);
+            waveTimer.gameObject.SetActive(waveController.BossUsesTimer);
         }
+        else
+        {
+            UIManager.Instance.DisableBossUI();
+            waveTimer.gameObject.SetActive(true);
+        } 
 
-        waveTimer.gameObject.SetActive(true);
         // Update wave timer display
         float remainingTime = waveController.RemainingWaveTime > 0
             ? waveController.RemainingWaveTime : waveController.TimeBetweenWaves; //choose which timer to show

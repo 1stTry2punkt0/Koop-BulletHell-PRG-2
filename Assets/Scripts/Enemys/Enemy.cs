@@ -62,13 +62,35 @@ public class Enemy : NetworkBehaviour
 
         if (enemyType.boss)
         {
-            // Update boss health bar UI
+            // health in percentage, clamped 0-1
+            float healthPercent = Mathf.Clamp01(currentHealth /enemyType.health); 
+
+            // Update boss health on all clients 
+            RpcUpdateBossHealth(healthPercent);
         }
 
         if (currentHealth <= 0)
         {
             Die();
+            canAttack = false;
+            enemyMovement.canMove = false;
+                
         }
+    }
+
+    [ObserversRpc]
+    private void RpcUpdateBossHealth(float perc)
+    {
+        UIManager.Instance.UpdateBossHP(perc);
+    }
+    /// <summary>
+    /// needed in case more than one boss wave exist;
+    /// prevents empty healthbar at start
+    /// </summary>
+    [Server]
+    public void InitializeBossHealth()
+    {
+        RpcUpdateBossHealth(1f);
     }
 
     [Server]
@@ -78,11 +100,8 @@ public class Enemy : NetworkBehaviour
         if(!IsSpawned)
             return; 
 
-        // trigger death event 
-       // OnDeathEvent?.Invoke(this);
-
         // Handle death logic here
-        enemyAnimation.SetState(EnemyAnimationState.Death);
+        enemyAnimation.SetState(EnemyAnimationState.Death, true);
         // Spawn Loot
         if (enemyType.loot != null)
         {
@@ -185,8 +204,6 @@ public class Enemy : NetworkBehaviour
         if(enemy != null && enemy.IsSpawned)
         {
             Despawn(enemy);
-            /*  EnemySpawner spawner = FindFirstObjectByType<EnemySpawner>();
-              spawner.UnregisterEnemy(NetworkObject); */
             OnDeathEvent?.Invoke(this);
         }
     }
