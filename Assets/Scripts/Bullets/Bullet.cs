@@ -5,6 +5,8 @@ using UnityEngine.VFX;
 
 public class Bullet : NetworkBehaviour
 {
+
+    public PlayerActions owner;
     public float speed = 10f;
     public float lifeTime = 5f;
     public float damage = 1;
@@ -25,7 +27,18 @@ public class Bullet : NetworkBehaviour
             if (hit.collider != null )
             {
                 if (IsServerInitialized)
+                {
+                    if (hit.collider.gameObject.TryGetComponent<Enemy>(out Enemy enemy))
+                    {
+                        enemy.TakeDamage(damage);
+                        //owner.score += damage;
+                    }
+                    if(hit.collider.gameObject.TryGetComponent<PlayerActions>(out PlayerActions player))
+                    {
+                        player.TakeDamage();
+                    }
                     Despawn();
+                }
             }
         }
 
@@ -49,11 +62,16 @@ public class Bullet : NetworkBehaviour
         gameObject.layer = layer;
     }
 
-    private void OnCollisionEnter(Collision collision)
+    public void AddLayerToMask(int layer)
     {
-        if (IsServerInitialized)
-            Despawn();
+        layerMask = layerMask | (1 << layer);
     }
+
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    if (IsServerInitialized)
+    //        Despawn();
+    //}
 
 
     public void StartEffect()
