@@ -50,7 +50,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8013628670609917601, guid: 391795b791b009f4195ce5fe966a4016, type: 3}
       propertyPath: m_Name
-      value: Lid_002 Variant
+      value: BossRewardPrefab
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1721604409152352069, guid: 391795b791b009f4195ce5fe966a4016, type: 3}
@@ -109,6 +109,7 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 1397806666814230771}
   _networkObjectCache: {fileID: 0}
   expAmount: 10
+  attackmodifire: 0
 --- !u!114 &1397806666814230771
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -155,7 +156,7 @@ MonoBehaviour:
   _teleportThreshold: 1
   <PrefabId>k__BackingField: 65535
   <SpawnableCollectionId>k__BackingField: 0
-  <AssetPathHash>k__BackingField: 2072563011634808911
+  <AssetPathHash>k__BackingField: 16731698689362849643
   SceneId: 0
   SerializedTransformProperties:
     Position: {x: 0, y: 0, z: 0}

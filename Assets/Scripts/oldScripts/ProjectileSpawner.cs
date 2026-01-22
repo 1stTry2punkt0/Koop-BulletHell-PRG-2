@@ -35,11 +35,14 @@ public class ProjectileSpawner : NetworkBehaviour
             // Set tag and layer for player projectiles
             proj.gameObject.tag = "PlayerProjectile";
             proj.gameObject.layer = LayerMask.NameToLayer("PlayerProjectile");
+            projScript.AddLayerToMask(LayerMask.NameToLayer("Enemy"));
+            //projScript.owner = owner;
         } else
         {
             // Set tag and layer for enemy projectiles
             proj.gameObject.tag = "EnemyProjectile";
             proj.gameObject.layer = LayerMask.NameToLayer("EnemyProjectile");
+            projScript.AddLayerToMask(LayerMask.NameToLayer("Player"));
         }
         // Spawn it on all clients (server authority)
         Spawn(proj);
