@@ -49,13 +49,6 @@ public class Enemy : NetworkBehaviour
         }
     }
 
-    //private void OnCollisionEnter(Collision collision)
-    //{
-    //    if (collision.collider.CompareTag("PlayerProjectile"))
-    //    {
-    //        TakeDamage(collision.collider.GetComponent<Bullet>().damage);
-    //    }
-    //}
 
     [Server]
     public void TakeDamage(float damage, PlayerActions dmgDealer)
@@ -156,8 +149,18 @@ public class Enemy : NetworkBehaviour
     private void MeleeAttack()
     {
         //Deal dmg
-    }
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, enemyType.attackRange);
 
+        foreach (Collider collider in hitColliders)
+        {
+            PlayerActions player = collider.GetComponent<PlayerActions>();
+            if (player != null)
+            {
+                player.ApplyServerDamage((int)enemyType.damage);
+
+            }
+        }
+    }
     private void RangedAttack()
     {
 
