@@ -12,6 +12,7 @@ public static class PlayerTracker
     // Register a player to the tracker
     public static void RegisterPlayer(PlayerMovement player)
     {
+        if(!player.IsServerInitialized) return;
         if (!_players.Contains(player))
         {
             _players.Add(player);
@@ -20,6 +21,7 @@ public static class PlayerTracker
     // Unregister a player from the tracker
     public static void UnregisterPlayer(PlayerMovement player)
     {
-            _players.Remove(player);
+        if(!player.IsServerInitialized) return;
+        _players.Remove(player);
     }
 }

@@ -241,14 +241,17 @@ public class Enemy : NetworkBehaviour
     [Server]
     private void DealConeDamage()
     {
-        foreach (PlayerMovement player in PlayerTracker.Players)
-        {
-            if (!player)
-                continue;
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, enemyType.chargeConeRange);
 
-            if (IsPlayerInCone(player.transform, enemyType.chargeConeRange, enemyType.chargeConeAngle))
-            { 
-                player.ChangeHealth((int)enemyType.chargeDamage);
+        foreach (Collider collider in hitColliders)
+        {
+            PlayerActions player = collider.GetComponent<PlayerActions>();
+            if(player != null)
+            {
+                if (IsPlayerInCone(player.transform, enemyType.chargeConeRange, enemyType.chargeConeAngle))
+                {
+                    player.ApplyServerDamage((int)enemyType.chargeDamage);
+                }
             }
         }
     }

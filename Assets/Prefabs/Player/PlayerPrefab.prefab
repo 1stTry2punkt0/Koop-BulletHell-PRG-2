@@ -516,7 +516,6 @@ MonoBehaviour:
   _networkObjectCache: {fileID: 3484095658981735308}
   speed: 5
   nameTMP: {fileID: 755546594789985595}
-  healthBar: {fileID: 4411544442096424095, guid: d15fdd3954f5283458804678769cc4d2, type: 3}
   layerMask:
     serializedVersion: 2
     m_Bits: 24576
@@ -586,7 +585,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.7140014, y: 1.4464368, z: 1}
+  m_Size: {x: 0.86, y: 1.4464368, z: 1}
   m_Center: {x: 0.017439008, y: 0.70453256, z: 0}
 --- !u!114 &-2092582727301848333
 MonoBehaviour:
