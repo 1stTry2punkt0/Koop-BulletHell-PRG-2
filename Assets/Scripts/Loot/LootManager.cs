@@ -195,7 +195,7 @@ public class LootManager : MonoBehaviour
                 break;
             case LevelUpType.Heal:
                 Debug.Log("Healing by " + optionAmounts[optionIndex]);
-                playerActions.Heal(Mathf.RoundToInt(optionAmounts[optionIndex]));
+                playerActions.HealOnServer(Mathf.RoundToInt(optionAmounts[optionIndex]));
                 break;
         }
         UIManager.Instance.RemoveRewardItem();

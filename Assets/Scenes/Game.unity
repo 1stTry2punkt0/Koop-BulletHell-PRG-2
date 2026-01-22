@@ -9875,16 +9875,24 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
+      propertyPath: totalWaves
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
       propertyPath: enemySpawner
       value: 
       objectReference: {fileID: 88233695}
+    - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
+      propertyPath: waveEnemySetters.Array.size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
       propertyPath: waveEnemySetters.Array.data[0].bossName
       value: 232323
       objectReference: {fileID: 0}
     - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
       propertyPath: waveEnemySetters.Array.data[0].bossWave
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
       propertyPath: waveEnemySetters.Array.data[0].useTimer
@@ -9916,15 +9924,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
       propertyPath: waveEnemySetters.Array.data[0].waveDuration
-      value: 12
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
       propertyPath: waveEnemySetters.Array.data[0].spawnInterval
-      value: 2
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
       propertyPath: waveEnemySetters.Array.data[0].useBossHealth
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
       propertyPath: waveEnemySetters.Array.data[1].spawnInterval
@@ -9981,7 +9989,7 @@ PrefabInstance:
     - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
       propertyPath: waveEnemySetters.Array.data[0].enemies.Array.data[0].enemyPrefab
       value: 
-      objectReference: {fileID: 2933498156239369950, guid: 7f9c74691342a364b886c2624f55d840, type: 3}
+      objectReference: {fileID: 7333038170092884059, guid: 151a02d55e86d1b41802f0ff1ca44ad0, type: 3}
     - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
       propertyPath: waveEnemySetters.Array.data[0].enemies.Array.data[1].enemyPrefab
       value: 

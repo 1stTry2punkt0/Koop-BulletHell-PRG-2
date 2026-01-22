@@ -26,8 +26,8 @@ public class PlayerMovement : NetworkBehaviour
 
     readonly public SyncVar<int> score = new SyncVar<int>();
 
-    readonly public SyncVar<int> playerHealth = new SyncVar<int>();
-    public UnityEngine.UI.Image healthBar;
+    //readonly public SyncVar<int> playerHealth = new SyncVar<int>();
+   // public UnityEngine.UI.Image healthBar;
     private bool isOnCD = false;
 
     [SerializeField] LayerMask layerMask;
@@ -89,11 +89,11 @@ public class PlayerMovement : NetworkBehaviour
         //playerColor.OnChange += OnColorChange;
         //playerColor.Value = new Color(Random.value, Random.value, Random.value);
 
-        playerHealth.Value = 100;
+       /* playerHealth.Value = 100;
         playerHealth.OnChange += (prev, next, asServer) =>
         {
             healthBar.fillAmount = playerHealth.Value / 100f;
-        };
+        }; */
 
         // Initialize default speed on the server (if not already set)
         if (syncSpeed.Value == 0f)
@@ -150,7 +150,7 @@ public class PlayerMovement : NetworkBehaviour
         SendCameraParmsServer(camera.fieldOfView, camera.aspect);
         OnNameChange(default, playerName.Value, false);
         //OnColorChange(default, playerColor.Value, false);
-        OnHealthChange(default, playerHealth.Value, false);
+        //OnHealthChange(default, playerHealth.Value, false);
         OnRotationChanged(default, syncRotation.Value, false);
     }
 
@@ -180,6 +180,10 @@ public class PlayerMovement : NetworkBehaviour
 
         //Set main cam above the player
         Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y + 15f, transform.position.z);
+
+        PlayerActions actions = GetComponent<PlayerActions>();
+        if (actions != null && !actions.IsAlive.Value)
+            return;
 
         // Make sure we actually have a keyboard (e.g. not on some weird platform)
         var keyboard = Keyboard.current;
@@ -216,17 +220,21 @@ public class PlayerMovement : NetworkBehaviour
         //    ChangeColor();
         //}
 
-        if (Input.GetKey(KeyCode.H) && !isOnCD)
+     /*   if (Input.GetKey(KeyCode.H) && !isOnCD)
         {
             ChangeHealth(10);
             isOnCD = true;
             Invoke(nameof(ResetCD), 1f);
-        }
+        } */
     }
 
     [ServerRpc]
     private void MoveServer(Vector3 input)
     {
+        PlayerActions actions = GetComponent<PlayerActions>();
+        if (actions != null && !actions.IsAlive.Value)
+            return;
+
         // Use TickDelta for tick-based movement instead of Time.deltaTime
         float delta = (float)TimeManager.TickDelta;
 
@@ -297,7 +305,7 @@ public class PlayerMovement : NetworkBehaviour
         //playerColor.Value = new Color(Random.value, Random.value, Random.value);
     }
 
-    [Server]
+/*    [Server]
     public void ChangeHealth(int amount)
     {
         playerHealth.Value -= amount;
@@ -306,7 +314,7 @@ public class PlayerMovement : NetworkBehaviour
             playerHealth.Value = 100;
             transform.position = Vector3.zero;
         }
-    }
+    } */
     public void OnSpeedChange(float prev, float next, bool asServer)
     {
         // Logs whenever the speed SyncVar changes
@@ -346,10 +354,10 @@ public class PlayerMovement : NetworkBehaviour
             
     //}
 
-    public void OnHealthChange(int prev, int next, bool asServer)
+  /*  public void OnHealthChange(int prev, int next, bool asServer)
     {
         healthBar.fillAmount = playerHealth.Value / 100f;
-    }
+    } */
 
     private void OnIsMovingChanged(bool perv, bool next,  bool asServer)
     {

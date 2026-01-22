@@ -19,6 +19,7 @@ public class WaveController : NetworkBehaviour
     private readonly SyncVar<float> remainingWaveTime = new() ;
     private readonly SyncVar<int> currentWave = new();
     private readonly SyncVar<float> betweenWaveTime = new();
+    private readonly SyncVar<bool> gameOver= new();
 
     // Boss wave exclusive SyncVars
     private readonly SyncVar<bool> bossUsesTimer = new();
@@ -33,6 +34,8 @@ public class WaveController : NetworkBehaviour
     public bool IsBossWave => isBossWave.Value;
 
     public bool BossAlive => bossAlive.Value;
+
+    public bool GameOver => gameOver.Value;
 
     // UI Accessors to display wave info
     [Header("UI Access")]
@@ -85,10 +88,20 @@ public class WaveController : NetworkBehaviour
         //wait for both players to be ready
         yield return StartCoroutine(WaitForPlayers());
 
+        if(gameOver.Value)
+        {
+            yield break; // Exit if game is already over
+        }
+
         // One time delay before starting the first wave
         betweenWaveTime.Value = timeBetweenWaves;
         while (betweenWaveTime.Value > 0f)
         {
+            if(gameOver.Value)
+            {
+                yield break; // Exit if game is over during the wait
+            }
+
             // Update time between waves
             betweenWaveTime.Value -= Time.deltaTime;
             yield return null;
@@ -97,6 +110,12 @@ public class WaveController : NetworkBehaviour
 
         for (int wave = 1; wave <= totalWaves; wave++)
         {
+            if(gameOver.Value)
+            {
+                yield break; // Exit if game is over before starting the wave
+            }
+            // Revive player at the start of each wave if one is still alive
+            ReviveDeadPlayer();
 
             // Get enemy settings for the current wave
             WaveEnemySetter enemySetter = GetEnemiesForWave(wave);
@@ -139,6 +158,11 @@ public class WaveController : NetworkBehaviour
                         // wave ends on timer or boss death
                         while (remainingWaveTime.Value > 0f && boss != null && boss.CurrentHealth > 0)
                         {
+                            if(gameOver.Value)
+                            {
+                                yield break; // Exit if game is over during the wave
+                            }
+
                             remainingWaveTime.Value -= Time.deltaTime;
                             yield return null;
                         }
@@ -148,6 +172,11 @@ public class WaveController : NetworkBehaviour
                         // wave ends when boss dies
                         while(boss != null && boss.CurrentHealth > 0f)
                         {
+                            if(gameOver.Value)
+                            {
+                                yield break; // Exit if game is over during the wave
+                            }
+
                             yield return null;
                         }
                     }
@@ -174,6 +203,11 @@ public class WaveController : NetworkBehaviour
                 // Timer for normla waves
                 while (remainingWaveTime.Value > 0f)
                 {
+                    if(gameOver.Value)
+                    {
+                        yield break; // Exit if game is over during the wave
+                    }
+
                     // Update remaining wave time
                     remainingWaveTime.Value -= Time.deltaTime;
                     yield return null;
@@ -198,6 +232,11 @@ public class WaveController : NetworkBehaviour
                 betweenWaveTime.Value = timeBetweenWaves;
                 while (betweenWaveTime.Value > 0f)
                 {
+
+                    if(gameOver.Value)
+                    {
+                        yield break; // Exit if game is over during the wait
+                    }
                     // Update time between waves
                     betweenWaveTime.Value -= Time.deltaTime;
                     yield return null;
@@ -207,7 +246,65 @@ public class WaveController : NetworkBehaviour
             }
         }
         Debug.Log("All waves completed!");
+        // All waves completed, end the game
+        EndGame();
+        RpcShowWinScreen();
     }
+
+    private void ReviveDeadPlayer()
+    {
+        // Check dead Players and revive if one is still alive
+        bool anyAlive = false;
+
+        foreach (var player in PlayerTracker.Players)
+        {
+            PlayerActions actions = player.GetComponent<PlayerActions>();
+            if (actions != null && actions.IsAlive.Value)
+            {
+                anyAlive = true;
+                break;
+            }
+        }
+        if (anyAlive)
+        {
+            // Revive all dead players
+            foreach (var player in PlayerTracker.Players)
+            {
+                PlayerActions actions = player.GetComponent<PlayerActions>();
+                if (actions != null && !actions.IsAlive.Value)
+                {
+                    actions.HealOnServer(1); // Revive with minimal health
+                }
+            }
+        }
+    }
+
+    [Server]
+    public void EndGame()
+    {
+        if(gameOver.Value)
+        {
+            return; // Game is already over
+        }
+        gameOver.Value = true;
+
+        if (spawnCoroutine != null)
+        {
+            // Stop spawning enemies if game ends
+            StopCoroutine(spawnCoroutine);
+            spawnCoroutine = null;
+        }
+        // Despawn all remaining enemies
+        enemySpawner.DespawnAllEnemies();
+
+    }
+
+    [ObserversRpc]
+    public void RpcShowWinScreen()
+    {
+        UIManager.Instance.ActivateEndScreen(true);
+    }
+
     private IEnumerator SpawnEnemies()
     {
         // Spawn enemies at regular intervals during the wave
