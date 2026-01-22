@@ -2,6 +2,7 @@ using UnityEngine;
 using FishNet.Object;
 using System.Collections;
 using UnityEngine.VFX;
+using UnityEngine.InputSystem.Processors;
 
 public class Enemy : NetworkBehaviour
 {
@@ -13,6 +14,8 @@ public class Enemy : NetworkBehaviour
     private float currentHealth;
 
     public bool canAttack = true;
+
+    public bool isDead = false;
 
     private GameObject chargeConeVisualInstance;
 
@@ -69,9 +72,10 @@ public class Enemy : NetworkBehaviour
             RpcUpdateBossHealth(healthPercent);
         }
 
-        if (currentHealth <= 0)
+        if (currentHealth <= 0 && !isDead)
         {
             Die();
+            isDead = true;
             canAttack = false;
             enemyMovement.canMove = false;
                 
