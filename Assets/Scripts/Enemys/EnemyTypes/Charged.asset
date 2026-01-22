@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Charged
   m_EditorClassIdentifier: 
   speed: 3
-  health: 100000
+  health: 10
   damage: 1
   attackType: 0
   attackRange: 5
