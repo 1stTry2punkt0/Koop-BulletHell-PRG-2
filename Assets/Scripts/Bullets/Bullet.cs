@@ -30,12 +30,12 @@ public class Bullet : NetworkBehaviour
                 {
                     if (hit.collider.gameObject.TryGetComponent<Enemy>(out Enemy enemy))
                     {
-                        enemy.TakeDamage(damage);
+                        enemy.TakeDamage(damage, owner);
                         //owner.score += damage;
                     }
                     if(hit.collider.gameObject.TryGetComponent<PlayerActions>(out PlayerActions player))
                     {
-                        player.TakeDamage();
+                        player.ApplyServerDamage((int)damage);
                     }
                     Despawn();
                 }

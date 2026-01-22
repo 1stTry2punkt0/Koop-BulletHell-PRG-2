@@ -1049,7 +1049,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0769f37c5a35b964abea1272e4563359, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerEXP: 0
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 148123405}
+  _networkObjectCache: {fileID: 0}
   levelUpSOs:
   - {fileID: 11400000, guid: 0a159fd6198109443afd2cc1049d70f5, type: 2}
   - {fileID: 11400000, guid: 303f3ab49c5df244ebb6d45e03a48cda, type: 2}
@@ -1455,7 +1457,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 0
-  m_FillAmount: 1
+  m_FillAmount: 0
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
@@ -9246,11 +9248,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
       propertyPath: waveEnemySetters.Array.data[1].waveIndex
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
       propertyPath: waveEnemySetters.Array.data[2].waveIndex
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
       propertyPath: waveEnemySetters.Array.data[0].waveDuration

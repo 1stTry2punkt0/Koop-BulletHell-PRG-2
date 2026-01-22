@@ -3,16 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine.UI;
+using FishNet.Object.Synchronizing;
+using FishNet.Object;
 
 
-public class LootManager : MonoBehaviour
+public class LootManager : NetworkBehaviour
 {
     public static LootManager instance;
 
-    public int playerEXP;
+    readonly public SyncVar<int> playerEXP = new SyncVar<int>(0);
+
     private int neededEXP = 20;
     private int playerLevel = 1;
-    private int collectedLevelUps = 0;
+    readonly public SyncVar<int> collectedLevelUps = new SyncVar<int>(0);
+    private int shownLevelUps = 0;
 
     [SerializeField] List<LevelUpSO> levelUpSOs;
 
@@ -38,34 +42,57 @@ public class LootManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        playerEXP.OnChange += OnEXPChanged;
+        collectedLevelUps.OnChange += OnCollectedLevelUpsChanged;
+    }
+
+    
+
+    private void OnEXPChanged(int oldValue, int newValue, bool asServer)
+    {
+        float expPercent = (float)newValue / neededEXP;
+        UIManager.Instance.UpdateEXP(expPercent);
+    }
+
+    private void OnCollectedLevelUpsChanged(int oldValue, int newValue, bool asServer)
+    {
+        if (newValue > shownLevelUps)
+        {
+            UIManager.Instance.AddRewardItem(false);
+            shownLevelUps++;
+        }
+    }
+
     public void ResetLootManager()
     {
-        playerEXP = 0;
+        playerEXP.Value = 0;
         neededEXP = 20;
         playerLevel = 1;
-        collectedLevelUps = 0;
+        collectedLevelUps.Value = 0;
+        shownLevelUps = 0;
         optionTypes.Clear();
         optionAmounts.Clear();
         isInLvlUp = false;
     }
 
+    [Server]
     public void AddEXP(int exp)
     {
-        playerEXP += exp;
-        if (playerEXP >= neededEXP)
+        playerEXP.Value += exp;
+        if (playerEXP.Value >= neededEXP)
         {
             LevelUp();
         }
-        float expPercent = (float)playerEXP / neededEXP;
-        UIManager.Instance.UpdateEXP(expPercent);
     }
 
+    [Server]
     private void LevelUp()
     {
         neededEXP += Mathf.RoundToInt(neededEXP * 0.2f);
-        playerEXP = 0;
-        collectedLevelUps++;
-        UIManager.Instance.AddRewardItem(false);
+        playerEXP.Value = 0;
+        collectedLevelUps.Value++;
     }
 
     public void StartLevelUp()
@@ -78,7 +105,7 @@ public class LootManager : MonoBehaviour
 
     private void ConsumeLevelUp()
     {
-        collectedLevelUps--;
+        collectedLevelUps.Value--;
         Debug.Log(levelUpOptionGOs.Count);
         for (int i = 0; i < levelUpOptionGOs.Count; i++)
         {
@@ -142,7 +169,7 @@ public class LootManager : MonoBehaviour
     {
         Debug.Log("Starting Level Up");
         Debug.Log("Collected Level Ups: " + collectedLevelUps);
-        while ( collectedLevelUps > 0)
+        while ( collectedLevelUps.Value > 0)
         {
             isInLvlUp = true;
             ConsumeLevelUp();

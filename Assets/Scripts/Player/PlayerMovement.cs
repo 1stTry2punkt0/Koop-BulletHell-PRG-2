@@ -22,12 +22,9 @@ public class PlayerMovement : NetworkBehaviour
     readonly public SyncVar<string> playerName = new SyncVar<string>();
     public TextMeshPro nameTMP;
 
-    //readonly public SyncVar<Color> playerColor = new SyncVar<Color>();
 
     readonly public SyncVar<int> score = new SyncVar<int>();
 
-    //readonly public SyncVar<int> playerHealth = new SyncVar<int>();
-   // public UnityEngine.UI.Image healthBar;
     private bool isOnCD = false;
 
     [SerializeField] LayerMask layerMask;
@@ -85,26 +82,9 @@ public class PlayerMovement : NetworkBehaviour
 
         syncRotation.OnChange += OnRotationChanged;
         isMoving.OnChange += OnIsMovingChanged;
-
-        //playerColor.OnChange += OnColorChange;
-        //playerColor.Value = new Color(Random.value, Random.value, Random.value);
-
-       /* playerHealth.Value = 100;
-        playerHealth.OnChange += (prev, next, asServer) =>
-        {
-            healthBar.fillAmount = playerHealth.Value / 100f;
-        }; */
-
         // Initialize default speed on the server (if not already set)
         if (syncSpeed.Value == 0f)
             syncSpeed.Value = 5f;
-
-        //spawner = GetComponent<ProjectileSpawner>();
-
-        // set spawn position
-     //   SetInitialPositionServer(new Vector3(Random.Range(-3f, 3f), 1f, Random.Range(-3f, 3f)));
-        // set y position to 1f to avoid spawning inside the ground
-     //   transform.position = new Vector3(transform.position.x, 1f, transform.position.z);
 
        // animator = GetComponent<NetworkAnimator>();
         playerAnimation = GetComponent<PlayerAnimation>();
@@ -114,11 +94,6 @@ public class PlayerMovement : NetworkBehaviour
     /// send initial position to server for enemy spawning logic
     /// </summary>
     /// <param name="position"></param>
- /*   [ServerRpc]
-    public void SetInitialPositionServer(Vector3 position)
-    {
-        transform.position = position;
-    } */
     private IEnumerator SpawnCollisionGrace()
     {
         int playerLayer = LayerMask.NameToLayer("Player");
@@ -149,8 +124,6 @@ public class PlayerMovement : NetworkBehaviour
         Camera camera = Camera.main;
         SendCameraParmsServer(camera.fieldOfView, camera.aspect);
         OnNameChange(default, playerName.Value, false);
-        //OnColorChange(default, playerColor.Value, false);
-        //OnHealthChange(default, playerHealth.Value, false);
         OnRotationChanged(default, syncRotation.Value, false);
     }
 
@@ -215,17 +188,6 @@ public class PlayerMovement : NetworkBehaviour
             GoIdle();
         }
 
-        //if (Input.GetKey(KeyCode.C))
-        //{
-        //    ChangeColor();
-        //}
-
-     /*   if (Input.GetKey(KeyCode.H) && !isOnCD)
-        {
-            ChangeHealth(10);
-            isOnCD = true;
-            Invoke(nameof(ResetCD), 1f);
-        } */
     }
 
     [ServerRpc]
@@ -252,9 +214,6 @@ public class PlayerMovement : NetworkBehaviour
         transform.position += movement;
         isMoving.Value = true;
 
-        
-       // playerAnimation.SetState(PlayerAnimationState.Run);
-       // animator.SetTrigger("Run");
         // Rotate character model to face movement direction
         Quaternion targetRotation = Quaternion.LookRotation(movement);
         characterModel.transform.rotation = Quaternion.Slerp(characterModel.transform.rotation, targetRotation, 0.2f);
@@ -299,22 +258,6 @@ public class PlayerMovement : NetworkBehaviour
         syncSpeed.Value = syncSpeed.Value == 5f ? 10f : 5f;
     }
 
-    [ServerRpc]
-    private void ChangeColor()
-    {
-        //playerColor.Value = new Color(Random.value, Random.value, Random.value);
-    }
-
-/*    [Server]
-    public void ChangeHealth(int amount)
-    {
-        playerHealth.Value -= amount;
-        if(playerHealth.Value <= 0)
-        {
-            playerHealth.Value = 100;
-            transform.position = Vector3.zero;
-        }
-    } */
     public void OnSpeedChange(float prev, float next, bool asServer)
     {
         // Logs whenever the speed SyncVar changes
@@ -335,29 +278,6 @@ public class PlayerMovement : NetworkBehaviour
         }
     }
 
-    //public void OnColorChange(Color prev, Color next, bool asServer)
-    //{
-    //    GetComponent<Renderer>().material.color = next;
-
-    //    float luminance = next.r * 0.2126f + next.g * 0.7152f + next.b * 0.0722f;
-
-    //    if (luminance < 0.5f)
-    //    {
-    //        nameTMP.color = Color.white;
-    //        healthBar.color = Color.white;
-    //    }
-    //    else
-    //    {
-    //        nameTMP.color = Color.black;
-    //        healthBar.color = Color.black;
-    //    }
-            
-    //}
-
-  /*  public void OnHealthChange(int prev, int next, bool asServer)
-    {
-        healthBar.fillAmount = playerHealth.Value / 100f;
-    } */
 
     private void OnIsMovingChanged(bool perv, bool next,  bool asServer)
     {

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3aa924212d590f8459900ba56b676533, type: 3}
-  m_Name: Test
+  m_Name: Meele
   m_EditorClassIdentifier: 
   speed: 3
   health: 5
@@ -18,6 +18,12 @@ MonoBehaviour:
   attackType: 2
   attackRange: 1
   attackCooldown: 5
+  scoreValue: 314
   loot: {fileID: 8083813632578074529, guid: 7a785bf8117d51c44a4a0d4befd204a6, type: 3}
   projectile: {fileID: 0}
   boss: 0
+  chargeWindupTime: 3
+  chargeConeAngle: 10
+  chargeConeRange: 5
+  chargeDamage: 2
+  chargeConeVisualPrefab: {fileID: 0}

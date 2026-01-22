@@ -10,6 +10,7 @@ public class EnemyType : ScriptableObject
     public AttackType attackType;
     public float attackRange;
     public float attackCooldown;
+    public int scoreValue;
     public NetworkObject loot;
     public NetworkObject projectile;
     public bool boss;

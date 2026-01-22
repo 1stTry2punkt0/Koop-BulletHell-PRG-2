@@ -18,6 +18,7 @@ MonoBehaviour:
   attackType: 0
   attackRange: 5
   attackCooldown: 5
+  scoreValue: 1884
   loot: {fileID: 8083813632578074529, guid: 7a785bf8117d51c44a4a0d4befd204a6, type: 3}
   projectile: {fileID: 0}
   boss: 0

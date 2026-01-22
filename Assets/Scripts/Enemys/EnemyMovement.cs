@@ -68,9 +68,12 @@ public class EnemyMovement : NetworkBehaviour
 
     private void FindTarget()
     {
+        target = null;
         // Logic to find and set the target
         foreach ( PlayerMovement player in PlayerTracker.Players)
         {
+            PlayerActions playerActions = player.GetComponent<PlayerActions>();
+            if (!playerActions.IsAlive.Value) continue;
             if (target == null)
             {
                 target = player.transform;

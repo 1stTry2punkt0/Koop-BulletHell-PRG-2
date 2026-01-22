@@ -19,7 +19,7 @@ public class ProjectileSpawner : NetworkBehaviour
     /// Call this from server or via ServerRpc to spawn a projectile.
     /// </summary>
     [ServerRpc(RequireOwnership = false)]
-    public void SpawnProjectileServer(Vector3 position, Quaternion rotation, float range, float speed, float dmg, bool isPlayer)
+    public void SpawnProjectileServer(Vector3 position, Quaternion rotation, float range, float speed, float dmg, bool isPlayer, PlayerActions owner)
     {
         if (!IsServerInitialized) return;
 
@@ -36,7 +36,7 @@ public class ProjectileSpawner : NetworkBehaviour
             proj.gameObject.tag = "PlayerProjectile";
             proj.gameObject.layer = LayerMask.NameToLayer("PlayerProjectile");
             projScript.AddLayerToMask(LayerMask.NameToLayer("Enemy"));
-            //projScript.owner = owner;
+            projScript.owner = owner;
         } else
         {
             // Set tag and layer for enemy projectiles

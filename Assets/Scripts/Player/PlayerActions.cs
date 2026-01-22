@@ -5,6 +5,7 @@ using FishNet.Object.Synchronizing;
 using System.Collections.Generic;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class PlayerActions : NetworkBehaviour
 {
@@ -12,7 +13,6 @@ public class PlayerActions : NetworkBehaviour
 
     private int maxHealth = 3;
     readonly public SyncVar<int> currentHealth = new SyncVar<int>();
-   // private int currentHealth;
 
     private float dmg = 1f;
     private float critrate = 0.1f;
@@ -23,7 +23,7 @@ public class PlayerActions : NetworkBehaviour
     private float bulletSpeed = 10f;
     private float bulletRange = 10f;
 
-    private List<Attackmodifire> attackmodifires;
+    readonly public SyncList<Attackmodifire> attackmodifires = new SyncList<Attackmodifire>();
 
     private bool canAttack = true;
 
@@ -32,15 +32,17 @@ public class PlayerActions : NetworkBehaviour
     public LayerMask enemyLayer;
 
     public readonly SyncVar<bool> IsAlive = new SyncVar<bool>(true);
-   // public bool IsAlive {get; private set;} = true;
+
+    readonly public SyncVar<int> score = new SyncVar<int>();
 
     private void Start() 
     {
         currentHealth.OnChange += OnHealthChanged;
+        score.OnChange += OnScoreChanged;
     }
     private void Awake() 
     {
-        attackmodifires = new List<Attackmodifire>();
+        //attackmodifires = new List<Attackmodifire>();
         //attackmodifires.Add(Attackmodifire.Triple);
         //attackmodifires.Add(Attackmodifire.Behind);
     }
@@ -49,7 +51,9 @@ public class PlayerActions : NetworkBehaviour
     {
         base.OnStartServer();
         currentHealth.Value = maxHealth;
+        score.Value = 0;
         IsAlive.Value = true;
+        
     }
 
     public override void OnStartClient()
@@ -57,7 +61,7 @@ public class PlayerActions : NetworkBehaviour
         if (IsOwner)
         {
             UIManager.Instance.UpdateHealth(currentHealth.Value, maxHealth);
-
+            UIManager.Instance.UpdateScore(score.Value);
             LootManager.instance.playerActions = this;
             LootManager.instance.StartLevelUp();
         }
@@ -65,7 +69,7 @@ public class PlayerActions : NetworkBehaviour
 
     private void Update() 
     {
-        if(!IsOwner || !IsAlive.Value) return;
+        if(!IsOwner && IsAlive.Value) return;
         if (canAttack)
         {
             targetEnemy();
@@ -110,6 +114,14 @@ public class PlayerActions : NetworkBehaviour
         }
     }
 
+    private void OnScoreChanged(int oldValue, int newValue, bool asServer)
+    {
+        if (IsOwner)
+        {
+            UIManager.Instance.UpdateScore(newValue);
+        }
+    }
+
     [Server]
     public void ApplyServerDamage(int amount)
     {
@@ -119,6 +131,12 @@ public class PlayerActions : NetworkBehaviour
             currentHealth.Value = 0;
             Die();
         }
+    }
+
+    [Server]
+    public void SetScore(int value)
+    {
+        score.Value += value;
     }
 
     [Server]
@@ -175,7 +193,6 @@ public class PlayerActions : NetworkBehaviour
         {
             currentHealth.Value = maxHealth;
         }
-        //UIManager.Instance.UpdateHealth(currentHealth.Value, maxHealth);
     }
 
     public void IncreaseDmg( float amount)
@@ -214,7 +231,6 @@ public class PlayerActions : NetworkBehaviour
     {
         maxHealth += 1;
         currentHealth.Value += 1;
-        UIManager.Instance.UpdateHealth(currentHealth.Value, maxHealth);
     }
 
     public void AddAttackModifire(Attackmodifire modifire)
@@ -257,7 +273,7 @@ public class PlayerActions : NetworkBehaviour
         }
 
         //Instantiate a projectile and set its direction towards the target
-        ProjectileSpawner.Instance.SpawnProjectileServer( transform.position, direction, bulletRange, bulletSpeed, projDmg, true);
+        ProjectileSpawner.Instance.SpawnProjectileServer( transform.position, direction, bulletRange, bulletSpeed, projDmg, true, this);
     }
     private void ResetAttack()
     {

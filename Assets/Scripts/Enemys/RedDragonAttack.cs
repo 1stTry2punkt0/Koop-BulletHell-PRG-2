@@ -45,12 +45,13 @@ public class RedDragonAttack : NetworkBehaviour
 
     IEnumerator SpiralAttack()
     {
+        yield return new WaitForSeconds(0.4f); // Wait for windup animation
         float angle = 0f;
         float duration = 0f;
         while (duration <= 2f)
         {
             Quaternion rotation = Quaternion.Euler(0, angle, 0) * Quaternion.LookRotation(enemyMovement.target.position - transform.position);
-            ProjectileSpawner.Instance.SpawnProjectileServer(transform.position + transform.forward * 1.5f, rotation, 10f, 10f, 1f, false);
+            ProjectileSpawner.Instance.SpawnProjectileServer(transform.position + transform.forward * 1.5f, rotation, 10f, 10f, 1f, false, null);
             angle += 30f; // Increase angle for spiral effect
             duration += 0.2f;
             yield return new WaitForSeconds(0.2f);
@@ -61,6 +62,7 @@ public class RedDragonAttack : NetworkBehaviour
 
     IEnumerator RingAttack()
     {
+        yield return new WaitForSeconds(1.6f); // Wait for windup animation
         // Shoot multiple projectiles in a spread
         int projectileCount = 12;
         float spreadAngle = 360; // Total spread angle in degrees
@@ -68,17 +70,18 @@ public class RedDragonAttack : NetworkBehaviour
         {
             float angle = -spreadAngle / 2 + (spreadAngle / (projectileCount - 1)) * i;
             Quaternion rotation = Quaternion.Euler(0, angle, 0) * Quaternion.LookRotation(enemyMovement.target.position - transform.position);
-            ProjectileSpawner.Instance.SpawnProjectileServer(transform.position + transform.forward * 1.5f, rotation, 10f, 10f, 1f, false);
+            ProjectileSpawner.Instance.SpawnProjectileServer(transform.position + transform.forward * 1.5f, rotation, 10f, 10f, 1f, false, null);
         }
         yield return null;
     }
 
     IEnumerator BeamAttack()
     {
+        yield return new WaitForSeconds(0.4f); // Wait for windup animation
         float duration = 0f;
         while (duration <= 1.4f)
         {
-            ProjectileSpawner.Instance.SpawnProjectileServer(transform.position + Vector3.up, Quaternion.LookRotation(enemyMovement.target.position - transform.position), 10f, 10f, 1f, false);
+            ProjectileSpawner.Instance.SpawnProjectileServer(transform.position + Vector3.up, Quaternion.LookRotation(enemyMovement.target.position - transform.position), 10f, 10f, 1f, false, null);
             duration += 0.2f;
             yield return new WaitForSeconds(0.2f);
         }
@@ -88,6 +91,7 @@ public class RedDragonAttack : NetworkBehaviour
 
     IEnumerator SpreadAttack()
     {
+        yield return new WaitForSeconds(1.8f); // Wait for windup animation
         // Shoot multiple projectiles in a spread
         int projectileCount = Random.Range(2, 6);
         float spreadAngle = 30f; // Total spread angle in degrees
@@ -95,7 +99,7 @@ public class RedDragonAttack : NetworkBehaviour
         {
             float angle = -spreadAngle / 2 + (spreadAngle / (projectileCount - 1)) * i;
             Quaternion rotation = Quaternion.Euler(0, angle, 0) * Quaternion.LookRotation(enemyMovement.target.position - transform.position);
-            ProjectileSpawner.Instance.SpawnProjectileServer(transform.position + transform.forward * 1.5f, rotation, 10f, 10f, 1f, false);
+            ProjectileSpawner.Instance.SpawnProjectileServer(transform.position + transform.forward * 1.5f, rotation, 10f, 10f, 1f, false, null);
 
         }
 

@@ -249,6 +249,12 @@ public class WaveController : NetworkBehaviour
         // All waves completed, end the game
         EndGame();
         RpcShowWinScreen();
+        foreach (var player in PlayerTracker.Players)
+        {
+            PlayerActions actions = player.GetComponent<PlayerActions>();
+            PlayerMovement movement = player.GetComponent<PlayerMovement>();
+            DatabaseManager.Instance.SaveScore(movement.playerName.Value, actions.score.Value);
+        }
     }
 
     private void ReviveDeadPlayer()

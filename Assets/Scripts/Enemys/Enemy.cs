@@ -49,16 +49,16 @@ public class Enemy : NetworkBehaviour
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.collider.CompareTag("PlayerProjectile"))
-        {
-            TakeDamage(collision.collider.GetComponent<Bullet>().damage);
-        }
-    }
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    if (collision.collider.CompareTag("PlayerProjectile"))
+    //    {
+    //        TakeDamage(collision.collider.GetComponent<Bullet>().damage);
+    //    }
+    //}
 
     [Server]
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, PlayerActions dmgDealer)
     {
         // Handle damage logic here
         currentHealth -= damage;
@@ -74,6 +74,8 @@ public class Enemy : NetworkBehaviour
 
         if (currentHealth <= 0 && !isDead)
         {
+            Debug.Log(dmgDealer);
+            dmgDealer.SetScore(enemyType.scoreValue);
             Die();
             isDead = true;
             canAttack = false;
@@ -168,14 +170,14 @@ public class Enemy : NetworkBehaviour
             {
                 float angle = -spreadAngle / 2 + (spreadAngle / (projectileCount - 1)) * i;
                 Quaternion rotation = Quaternion.Euler(0, angle, 0) * Quaternion.LookRotation(enemyMovement.target.position - transform.position);
-                ProjectileSpawner.Instance.SpawnProjectileServer(transform.position + transform.forward * 1.5f, rotation, 10f, 10f, 1f, false);
+                ProjectileSpawner.Instance.SpawnProjectileServer(transform.position + transform.forward * 1.5f, rotation, 10f, 10f, 1f, false, null);
 
             }
         }
         else
         {
             // Shoot single projectile
-            ProjectileSpawner.Instance.SpawnProjectileServer(transform.position + Vector3.up, Quaternion.LookRotation(enemyMovement.target.position - transform.position), 10f, 10f, 1f, false);
+            ProjectileSpawner.Instance.SpawnProjectileServer(transform.position + Vector3.up, Quaternion.LookRotation(enemyMovement.target.position - transform.position), 10f, 10f, 1f, false, null);
         }
     }
 
