@@ -146,6 +146,11 @@ public class PlayerActions : NetworkBehaviour
         //Handle player death
         Debug.Log("Player Died");
         IsAlive.Value = false;
+        PlayerAnimation animation = GetComponent<PlayerAnimation>();
+        if (animation != null)
+        {
+            animation.SetState(PlayerAnimationState.Death);
+        }
         DisableControls();
         CheckAllPlayerDead();
     }
@@ -187,6 +192,12 @@ public class PlayerActions : NetworkBehaviour
         {
             IsAlive.Value = true;
             EnableControls();
+
+            PlayerAnimation animation = GetComponent<PlayerAnimation>();
+            if (animation != null)
+            {
+                animation.Unlock();
+            }
         }
         currentHealth.Value += amount;
         if (currentHealth.Value > maxHealth)
