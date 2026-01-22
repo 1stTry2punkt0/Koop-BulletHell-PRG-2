@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3aa924212d590f8459900ba56b676533, type: 3}
   m_Name: RedDragon
   m_EditorClassIdentifier: 
-  speed: 3
+  speed: 6
   health: 50
   damage: 1
   attackType: 3
-  attackRange: 5
+  attackRange: 8
   attackCooldown: 3
   loot: {fileID: 8083813632578074529, guid: 7a785bf8117d51c44a4a0d4befd204a6, type: 3}
   projectile: {fileID: 6027824633851036238, guid: dc2ecf204031b224cbdf3a6b0c3557d0, type: 3}
