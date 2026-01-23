@@ -1159,6 +1159,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45e916d8820b223428b74e79b8c25998, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 148123405}
+  _networkObjectCache: {fileID: 0}
 --- !u!114 &148123407
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9212,7 +9215,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
       propertyPath: waveEnemySetters.Array.data[0].waveDuration
-      value: 20
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 5440776109765827306, guid: de930440658766345bf9be72bda12bcf, type: 3}
       propertyPath: waveEnemySetters.Array.data[1].waveDuration

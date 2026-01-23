@@ -51,14 +51,8 @@ public class PlayerActions : NetworkBehaviour
     private void Start() 
     {
         currentHealth.OnChange += OnHealthChanged;
-        maxHealth.OnChange += OnHealthChanged;
+        maxHealth.OnChange += OnMaxHealthChanged;
         score.OnChange += OnScoreChanged;
-    }
-    private void Awake() 
-    {
-        //attackmodifires = new List<Attackmodifire>();
-        //attackmodifires.Add(Attackmodifire.Triple);
-        //attackmodifires.Add(Attackmodifire.Behind);
     }
 
     public void resetStats()
@@ -87,15 +81,6 @@ public class PlayerActions : NetworkBehaviour
 
         canAttack = true;
         target = null;
-    }
-
-    public override void OnStartServer()
-    {
-        base.OnStartServer();
-        currentHealth.Value = maxHealth.Value;
-        score.Value = 0;
-        IsAlive.Value = true;
-        
     }
 
     public override void OnStartClient()
@@ -157,6 +142,13 @@ public class PlayerActions : NetworkBehaviour
         if (IsOwner)
         {
             UIManager.Instance.UpdateHealth(newValue, maxHealth.Value);
+        }
+    }
+    private void OnMaxHealthChanged(int oldValue, int newValue, bool asServer)
+    {
+        if (IsOwner)
+        {
+            UIManager.Instance.UpdateHealth(currentHealth.Value, newValue);
         }
     }
 
@@ -297,6 +289,16 @@ public class PlayerActions : NetworkBehaviour
     [ServerRpc]
     public void IncreaseMaxHP()
     {
+        if (!IsAlive.Value)
+        {
+            IsAlive.Value = true;
+            EnableControls();
+            PlayerAnimation animation = GetComponent<PlayerAnimation>();
+            if (animation != null)
+            {
+                animation.Unlock();
+            }
+        }
         maxHealth.Value += 1;
         currentHealth.Value += 1;
     }
@@ -357,7 +359,6 @@ public class PlayerActions : NetworkBehaviour
     }
     public void EnableControls()
     {
-        canAttack = true;
         PlayerMovement movement = GetComponent<PlayerMovement>();
         if (movement != null)
             movement.enabled = true;

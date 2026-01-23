@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using FishNet.Object;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -207,7 +208,6 @@ public class UIManager : MonoBehaviour
         });
 
     }
-
     private void DisableEndScreen()
     {
         endScreen.SetActive(false);

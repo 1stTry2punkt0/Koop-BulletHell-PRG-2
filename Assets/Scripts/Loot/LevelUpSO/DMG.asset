@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: DMG
   m_EditorClassIdentifier: 
   levelUpType: 1
-  commonAmount: 3
-  rareAmount: 5
-  epicAmount: 8
-  legendaryAmount: 12
+  commonAmount: 1
+  rareAmount: 2
+  epicAmount: 3
+  legendaryAmount: 5

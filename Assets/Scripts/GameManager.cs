@@ -1,7 +1,7 @@
-using NUnit.Framework;
+using FishNet.Object;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class GameManager : NetworkBehaviour
 {
     public static GameManager instance;
 
@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
     {
         // Implement game start logic here
         LootManager.instance.ResetLootManager();
-        UIManager.Instance.ResetUI();
+        ObserverStartGame();
         foreach (var player in PlayerTracker.Players)
         {
             player.GetComponent<PlayerActions>().resetStats();
@@ -42,16 +42,10 @@ public class GameManager : MonoBehaviour
         }
 
     }
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [ObserversRpc]
+    public void ObserverStartGame()
     {
-        
+        UIManager.Instance.ResetUI();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
