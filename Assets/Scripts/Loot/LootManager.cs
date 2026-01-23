@@ -233,7 +233,6 @@ public class LootManager : NetworkBehaviour
         }
         optionTypes.Clear();
         optionAmounts.Clear();
-        playerActions.DebugStats();
         UIManager.Instance.RemoveRewardItem();
         isInLvlUp = false;
     }

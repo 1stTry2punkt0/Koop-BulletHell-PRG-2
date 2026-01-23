@@ -18,7 +18,6 @@ public class PlayerActions : NetworkBehaviour
     private float critrate = 0.1f;
     private float critdmg = 1.2f;
     private float attackSpeed = 0.5f;
-    private float moveSpeed;
     private float range = 10f;
     private float bulletSpeed = 10f;
     private float bulletRange = 10f;
@@ -39,11 +38,6 @@ public class PlayerActions : NetworkBehaviour
     public void SetIsLvling(bool val)
     {
         isLvling.Value = val;
-    }
-
-    public void DebugStats()
-    {
-        Debug.Log($"MaxHP: {maxHealth.Value} DMG: {dmg}, CRITRATE: {critrate}, CRITDMG: {critdmg}, ATKSPEED: {attackSpeed}, MOVESPEED: {moveSpeed}, RANGE: {range}, BULLETSPEED: {bulletSpeed}, BULLETRANGE: {bulletRange}");
     }
 
     readonly public SyncVar<int> score = new SyncVar<int>();
@@ -68,7 +62,6 @@ public class PlayerActions : NetworkBehaviour
         critrate = 0.1f;
         critdmg = 1.2f;
         attackSpeed = 0.5f;
-        moveSpeed = 5f;
         range = 10f;
         bulletSpeed = 10f;
         bulletRange = 10f;
@@ -271,7 +264,8 @@ public class PlayerActions : NetworkBehaviour
     }
     public void IncreaseMoveSpeed(float amount)
     {
-        moveSpeed += amount;
+        PlayerMovement movement = GetComponent<PlayerMovement>();
+        movement.ChangeSpeed(amount);
     }
     public void IncreaseRange(float amount)
     {

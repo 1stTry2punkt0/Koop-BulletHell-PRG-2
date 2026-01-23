@@ -175,10 +175,6 @@ public class PlayerMovement : NetworkBehaviour
 
         _input = new Vector3(horizontal, 0f, vertical);
 
-        // M key toggles speed (new Input System)
-        if (keyboard.mKey != null && keyboard.mKey.wasPressedThisFrame)
-            ChangeSpeed();
-
         // Send input to the server (server-authoritative movement)
         if (_input != Vector3.zero)
         {
@@ -247,10 +243,9 @@ public class PlayerMovement : NetworkBehaviour
     }
 
     [ServerRpc]
-    private void ChangeSpeed()
+    public void ChangeSpeed(float increase)
     {
-        // Toggle between two speeds (server decides)
-        syncSpeed.Value = syncSpeed.Value == 5f ? 10f : 5f;
+        syncSpeed.Value += increase;
     }
 
     public void OnSpeedChange(float prev, float next, bool asServer)
