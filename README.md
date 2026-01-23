@@ -151,6 +151,19 @@ The game must function as an online multiplayer experience (host + client) and m
       - Movement: W, A, S, D
       - Shooting: Automatic
       - Level-up Selection: Mouse click
+  ### Connecting via Multiple Devices
+  - Host
+      - Windows Defender Firewall: Create a new inbound rule<br>
+        -> Type: Port<br>
+        -> Protocol: UDP<br>
+        -> Allow the connection<br>
+        -> Check all profiles<br>
+        OR disable the firewall<br>
+    - Click "Host Game"
+    - Click "Start Game" once both players are connected
+  - Client
+    - Tugboat: Enter the host's IP address
+    - Click "Join Game"
 
   ## Description of data persistence
   Highscore are stored in a database using PHP and SQL.
