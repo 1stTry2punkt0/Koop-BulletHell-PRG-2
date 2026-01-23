@@ -32,8 +32,13 @@ public class PreGameMenuManager : NetworkBehaviour
 
     public void QuitGame()
     {
-        Application.Quit();
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false; // Stop playing in the editor
+#else
+        Application.Quit(); // Quit the application
+#endif
     }
+
 
     [ObserversRpc]
     public void EnterGame()

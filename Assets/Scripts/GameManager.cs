@@ -1,3 +1,4 @@
+using NUnit.Framework;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -31,6 +32,15 @@ public class GameManager : MonoBehaviour
         {
             waveController.StartWaves();
         }
+
+        //Get all exp objects and delete them
+        var allExp = FindObjectsOfType<EXP>();
+
+        foreach (var exp in allExp)
+        {
+            exp.NetworkObject.Despawn();
+        }
+
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

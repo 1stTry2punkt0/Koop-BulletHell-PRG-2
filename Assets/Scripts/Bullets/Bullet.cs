@@ -30,6 +30,7 @@ public class Bullet : NetworkBehaviour
                 {
                     if (hit.collider.gameObject.TryGetComponent<Enemy>(out Enemy enemy))
                     {
+                        Debug.Log(owner.name + "did" + damage.ToString() + "dmg" );
                         enemy.TakeDamage(damage, owner);
                         //owner.score += damage;
                     }

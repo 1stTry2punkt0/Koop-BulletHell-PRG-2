@@ -3,6 +3,7 @@ using FishNet.Object.Synchronizing;
 using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class WaveController : NetworkBehaviour
@@ -238,6 +239,13 @@ public class WaveController : NetworkBehaviour
             // If not the last wave, prepare for the next wave
             if (wave < totalWaves)
             {
+                LootManager.instance.StartLevelUp();
+                Debug.Log(PlayersAreInLvlUp());
+                yield return new WaitForSeconds(0.5f);
+                while (PlayersAreInLvlUp())
+                {
+                    yield return null;
+                }
                 // Start countdown for next wave
                 betweenWaveTime.Value = timeBetweenWaves;
                 while (betweenWaveTime.Value > 0f)
@@ -259,6 +267,23 @@ public class WaveController : NetworkBehaviour
         // All waves completed, end the game
         EndGame();
         RpcShowWinScreen();
+    }
+
+    [Server]
+    private bool PlayersAreInLvlUp()
+    {
+        bool result = false;
+        // Check if any player is currently in level-up state
+        foreach (var player in PlayerTracker.Players)
+        {
+            PlayerActions actions = player.GetComponent<PlayerActions>();
+            //Debug.Log($"Player {player.name} leveling up: {actions != null && actions.isLvling.Value}");
+            if (actions != null && actions.isLvling.Value)
+            {
+                result = true;
+            }
+        }
+        return result; // No players are leveling up
     }
 
     private void ReviveDeadPlayer()

@@ -17,6 +17,7 @@ public class LootManager : NetworkBehaviour
     private int playerLevel = 1;
     readonly public SyncVar<int> collectedLevelUps = new SyncVar<int>(0);
     private int shownLevelUps = 0;
+    private int playerLvlUps;
 
     [SerializeField] List<LevelUpSO> levelUpSOs;
 
@@ -46,6 +47,7 @@ public class LootManager : NetworkBehaviour
     {
         playerEXP.OnChange += OnEXPChanged;
         collectedLevelUps.OnChange += OnCollectedLevelUpsChanged;
+
     }
 
     
@@ -91,20 +93,22 @@ public class LootManager : NetworkBehaviour
     private void LevelUp()
     {
         neededEXP += Mathf.RoundToInt(neededEXP * 0.2f);
-        playerEXP.Value = 0;
+        playerEXP.Value = playerEXP.Value - neededEXP;
         collectedLevelUps.Value++;
     }
 
+    [ObserversRpc]
     public void StartLevelUp()
     {
-        //playerActions.IsLvling = true;
-        levelUpOptionGOs = UIManager.Instance.ActivateLevelUpMenu();
+        Debug.Log("Starting Level Up Process");
+
         StartCoroutine(LevelUpRoutine());
     }
 
     private void ConsumeLevelUp()
     {
         collectedLevelUps.Value--;
+        playerLvlUps--;
         for (int i = 0; i < levelUpOptionGOs.Count; i++)
         {
             SetLvlUpOptions(i);
@@ -165,9 +169,13 @@ public class LootManager : NetworkBehaviour
 
     IEnumerator LevelUpRoutine()
     {
+        playerLvlUps = collectedLevelUps.Value;
+        playerActions.SetIsLvling(true);
+        levelUpOptionGOs = UIManager.Instance.ActivateLevelUpMenu();
+
         Debug.Log("Starting Level Up");
         Debug.Log("Collected Level Ups: " + collectedLevelUps);
-        while ( collectedLevelUps.Value > 0)
+        while ( playerLvlUps > 0)
         {
             isInLvlUp = true;
             ConsumeLevelUp();
@@ -179,7 +187,7 @@ public class LootManager : NetworkBehaviour
         isInLvlUp = false;
         optionTypes.Clear();
         optionAmounts.Clear();
-        //playerActions.IsLvling = false;
+        playerActions.SetIsLvling(false);
     }
 
     public void ApplyLvlUp(int optionIndex)
@@ -220,9 +228,12 @@ public class LootManager : NetworkBehaviour
                 break;
             case LevelUpType.Heal:
                 Debug.Log("Healing by " + optionAmounts[optionIndex]);
-                playerActions.HealOnServer(Mathf.RoundToInt(optionAmounts[optionIndex]));
+                playerActions.HealOnServerRpc(Mathf.RoundToInt(optionAmounts[optionIndex]));
                 break;
         }
+        optionTypes.Clear();
+        optionAmounts.Clear();
+        playerActions.DebugStats();
         UIManager.Instance.RemoveRewardItem();
         isInLvlUp = false;
     }

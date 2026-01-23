@@ -11,7 +11,7 @@ public class PlayerActions : NetworkBehaviour
 {
     public int difficulty = 1;
 
-    private int maxHealth = 3;
+    readonly public SyncVar<int> maxHealth = new SyncVar<int>();
     readonly public SyncVar<int> currentHealth = new SyncVar<int>();
 
     private float dmg = 1f;
@@ -33,11 +33,25 @@ public class PlayerActions : NetworkBehaviour
 
     public readonly SyncVar<bool> IsAlive = new SyncVar<bool>(true);
 
+    public readonly SyncVar<bool> isLvling = new SyncVar<bool>(false);
+
+    [ServerRpc]
+    public void SetIsLvling(bool val)
+    {
+        isLvling.Value = val;
+    }
+
+    public void DebugStats()
+    {
+        Debug.Log($"MaxHP: {maxHealth.Value} DMG: {dmg}, CRITRATE: {critrate}, CRITDMG: {critdmg}, ATKSPEED: {attackSpeed}, MOVESPEED: {moveSpeed}, RANGE: {range}, BULLETSPEED: {bulletSpeed}, BULLETRANGE: {bulletRange}");
+    }
+
     readonly public SyncVar<int> score = new SyncVar<int>();
 
     private void Start() 
     {
         currentHealth.OnChange += OnHealthChanged;
+        maxHealth.OnChange += OnHealthChanged;
         score.OnChange += OnScoreChanged;
     }
     private void Awake() 
@@ -49,7 +63,13 @@ public class PlayerActions : NetworkBehaviour
 
     public void resetStats()
     {
-        maxHealth = 3;
+        PlayerAnimation animation = GetComponent<PlayerAnimation>();
+        if (animation != null)
+        {
+            animation.Unlock();
+        }
+
+        maxHealth.Value = 3;
         dmg = 1f;
         critrate = 0.1f;
         critdmg = 1.2f;
@@ -61,8 +81,8 @@ public class PlayerActions : NetworkBehaviour
         attackmodifires.Clear();
 
         score.Value = 0;
-        HealOnServer(maxHealth);
-        currentHealth.Value = maxHealth;
+        HealOnServerRpc(maxHealth.Value);
+        currentHealth.Value = maxHealth.Value;
         IsAlive.Value = true;
 
         canAttack = true;
@@ -72,7 +92,7 @@ public class PlayerActions : NetworkBehaviour
     public override void OnStartServer()
     {
         base.OnStartServer();
-        currentHealth.Value = maxHealth;
+        currentHealth.Value = maxHealth.Value;
         score.Value = 0;
         IsAlive.Value = true;
         
@@ -82,10 +102,9 @@ public class PlayerActions : NetworkBehaviour
     {
         if (IsOwner)
         {
-            UIManager.Instance.UpdateHealth(currentHealth.Value, maxHealth);
+            UIManager.Instance.UpdateHealth(currentHealth.Value, maxHealth.Value);
             UIManager.Instance.UpdateScore(score.Value);
             LootManager.instance.playerActions = this;
-            LootManager.instance.StartLevelUp();
         }
     }
 
@@ -132,9 +151,10 @@ public class PlayerActions : NetworkBehaviour
     {
         if (IsOwner)
         {
-            UIManager.Instance.UpdateHealth(newValue, maxHealth);
+            UIManager.Instance.UpdateHealth(newValue, maxHealth.Value);
         }
     }
+
 
     private void OnScoreChanged(int oldValue, int newValue, bool asServer)
     {
@@ -207,6 +227,7 @@ public class PlayerActions : NetworkBehaviour
     {
         UIManager.Instance.ActivateEndScreen(false);
     }
+
     [Server]
     public void HealOnServer(int amount)
     {
@@ -222,10 +243,16 @@ public class PlayerActions : NetworkBehaviour
             }
         }
         currentHealth.Value += amount;
-        if (currentHealth.Value > maxHealth)
+        if (currentHealth.Value > maxHealth.Value)
         {
-            currentHealth.Value = maxHealth;
+            currentHealth.Value = maxHealth.Value;
         }
+    }
+
+    [ServerRpc]
+    public void HealOnServerRpc(int amount)
+    {
+        HealOnServer(amount);
     }
 
     #region Stat Increasers
@@ -261,9 +288,11 @@ public class PlayerActions : NetworkBehaviour
     {
         bulletRange += amount;
     }
+
+    [ServerRpc]
     public void IncreaseMaxHP()
     {
-        maxHealth += 1;
+        maxHealth.Value += 1;
         currentHealth.Value += 1;
     }
     #endregion
