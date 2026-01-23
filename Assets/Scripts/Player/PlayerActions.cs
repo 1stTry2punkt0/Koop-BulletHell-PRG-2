@@ -110,7 +110,12 @@ public class PlayerActions : NetworkBehaviour
 
     private void Update() 
     {
-        if(!IsOwner && IsAlive.Value) return;
+        if (IsOwner)
+        {
+            Debug.Log("IsAlive: " + IsAlive.Value);
+            Debug.Log("CanAttack: " + canAttack);
+        }
+        if (!IsOwner && IsAlive.Value) return;
         if (canAttack)
         {
             targetEnemy();
@@ -341,14 +346,11 @@ public class PlayerActions : NetworkBehaviour
     }
     private void ResetAttack()
     {
-        if(!IsAlive.Value) return;
         canAttack = true;
     }
 
     public void DisableControls()
     {
-        canAttack = false;
-
         PlayerMovement movement = GetComponent<PlayerMovement>();
         if (movement != null)
             movement.enabled = false;
