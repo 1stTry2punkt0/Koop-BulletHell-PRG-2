@@ -14,14 +14,14 @@ Each enemy type has its own unique fighting style, keeping combat freah and chal
 
 By defeating enemies, players earn points and can compete for a spot in the highscore leaderboard.<br>
 
-### TEAM:
+## TEAM:
 Philon Hauk<br>
 Lucas Pietruschka
 
 **PROJECT CREATED: January 7, 2026**<br>
 **PROJECT END: January 23, 2026**
 
-### PROJECT TASK:
+## PROJECT TASK:
 The goal of this project is the development of a playable two-player top-down arcade bullet-hell game.<br>
 The game must function as an online multiplayer experience (host + client) and meet the technical requirements listed below.<br>
 
@@ -74,14 +74,17 @@ The game must function as an online multiplayer experience (host + client) and m
   - Overview of implemented bonus features
   - Known bugs or limitations
 
-### Technical Overview 
+## Technical Overview 
 **1. Used RPCs**
   - [ObserverRpc]
   - [TargetRpc]
   - [ServerRpc] <br>
 **2. Used SyncVars**
   - currentHealth (PlayerActions)
+  - maxHealth (PlayerActions)
   - IsAlive (PlayerActions)
+  - attackmodifires (SyncList PlayerActions)
+  - isLvling (PlayerActions)
   - score (PlayerActions)
   - syncSpeed (PlayerMovement)
   - playerName (PlayerMovement)
@@ -116,19 +119,38 @@ The game must function as an online multiplayer experience (host + client) and m
       - Spawn intervals are adjustable through the WaveController
   - Enemy Range, Damage, Hp and more is adjustable through scritable objects<br>
 
-  ### Instructions for starting the host and client
-  
+  ## Instructions for starting the host and client
+  1. Create a database named "db_highscoresbullethell".
+  2. In the Unity project, navigate to the folder DBStuff(NotUnity).
+  3. Start XAMPP.
+  4. Copy the bulletHell folder into the htdocs directory of your XAMPP installation.
+  5. Import the provided SQL file into the db_highscoresbullethell database.
+  6. Open Unity again and switch to 2PlayerTest play mode.
+  7. Start the game and click "Host Game" on one of the clients.
+  8. On the second client, click "Join Game".
+  9. Press "Start Game" on the host to begin.
+  10. Controls:
+      - Movement: W, A, S, D
+      - Shooting: Automatic
+      - Level-up Selection: Mouse click
 
-  ### Description of data persistence
-  Highscore are stored in a database using PHP and SQL
+  ## Description of data persistence
+  Highscore are stored in a database using PHP and SQL.
 
-  ### Overview of implemented bonus 
-  - Combined wave system with boss enemies
-  - Added 2 additional enemy types 
-  - Implemented level-ups and power-ups
+  ## Overview of implemented bonus 
+  - Combined wave system with boss enemies.
+  - Added 2 additional enemy types.
+  - Implemented level-ups and power-ups.
   - Created additional and more complex bullet patterns for the boss enemy and players.
-  - Developed a fully adjustable wave system, allowing control over enemy spawns with weighted enimies, configurable spawn intervals, wave duration settings, and more
+  - Developed a fully adjustable wave system, allowing control over enemy spawns with weighted enimies, configurable spawn intervals, wave duration settings, and more.
   - Added timed or normal boss waves, enabling the boss to be defeated either within a set time limit or with unlimited time based solely on its health.
   - Fully animated player and enemies, with animations synchronized across all clients.
 
-### Known bugs and limitations
+## Known bugs and limitations
+- FishNet "Server" and "Client" button still in viewport after the game has started.
+- "Start Game" button does not work for Player 2.
+- The "Back to Lobby" button on the Victory screen only hides the Victory screen.
+- The "Leave Lobby" button only returns back to main menu.
+- Game breaks if both player press "Host Game"
+- Player 2's name occasionally disappers.
+- Bullets rarely pass through enemies.
