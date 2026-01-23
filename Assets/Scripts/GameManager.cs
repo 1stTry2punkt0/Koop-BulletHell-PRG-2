@@ -21,13 +21,22 @@ public class GameManager : MonoBehaviour
     {
         // Implement game start logic here
         LootManager.instance.ResetLootManager();
-
+        UIManager.Instance.ResetUI();
+        foreach (var player in PlayerTracker.Players)
+        {
+            player.GetComponent<PlayerActions>().resetStats();
+        }
+        WaveController waveController = FindFirstObjectByType<WaveController>();
+        if (waveController != null)
+        {
+            waveController.StartWaves();
+        }
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        StartGame();
+        
     }
 
     // Update is called once per frame

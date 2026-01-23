@@ -99,14 +99,12 @@ public class LootManager : NetworkBehaviour
     {
         //playerActions.IsLvling = true;
         levelUpOptionGOs = UIManager.Instance.ActivateLevelUpMenu();
-        Debug.Log(levelUpOptionGOs.Count);
         StartCoroutine(LevelUpRoutine());
     }
 
     private void ConsumeLevelUp()
     {
         collectedLevelUps.Value--;
-        Debug.Log(levelUpOptionGOs.Count);
         for (int i = 0; i < levelUpOptionGOs.Count; i++)
         {
             SetLvlUpOptions(i);

@@ -124,6 +124,26 @@ public class UIManager : MonoBehaviour
         Destroy(rewardItem);
     }
 
+    public void ResetUI()
+    {
+        UpdateScore(0);
+        UpdateHealth(0, 0);
+        ClearRewardItems();
+        UpdateEXP(0f);
+        DisableBossUI();
+        DeactivateLevelUpMenu();
+        DisableEndScreen();
+    }
+
+    private void ClearRewardItems()
+    {
+        foreach (var item in rewardItems)
+        {
+            Destroy(item);
+        }
+        rewardItems.Clear();
+    }
+
     public void UpdateEXP(float progress)
     {
         // Update EXP bar logic here
@@ -188,13 +208,22 @@ public class UIManager : MonoBehaviour
 
     }
 
+    private void DisableEndScreen()
+    {
+        endScreen.SetActive(false);
+    }
+
     public void NewGame()
     {
         Debug.Log("New Game pressed");
+        DisableEndScreen();
+        GameManager.instance.StartGame();
     }
 
     public void BackToLobby()
     {
+        DisableEndScreen();
+
         Debug.Log("Back to Lobby pressed");
     }
 

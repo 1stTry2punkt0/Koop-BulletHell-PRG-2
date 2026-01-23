@@ -25,8 +25,6 @@ public class PlayerMovement : NetworkBehaviour
 
     readonly public SyncVar<int> score = new SyncVar<int>();
 
-    private bool isOnCD = false;
-
     [SerializeField] LayerMask layerMask;
 
 
@@ -248,12 +246,6 @@ public class PlayerMovement : NetworkBehaviour
         }
     }
 
-
-    private void ResetCD()
-    {
-        isOnCD = false;
-    }
-
     [ServerRpc]
     private void ChangeSpeed()
     {
@@ -264,7 +256,7 @@ public class PlayerMovement : NetworkBehaviour
     public void OnSpeedChange(float prev, float next, bool asServer)
     {
         // Logs whenever the speed SyncVar changes
-        Debug.Log($"Speed changed: {prev} ? {next}");
+        //Debug.Log($"Speed changed: {prev} ? {next}");
     }
 
     public void OnNameChange(string prev, string next, bool asServer)

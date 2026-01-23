@@ -47,6 +47,28 @@ public class PlayerActions : NetworkBehaviour
         //attackmodifires.Add(Attackmodifire.Behind);
     }
 
+    public void resetStats()
+    {
+        maxHealth = 3;
+        dmg = 1f;
+        critrate = 0.1f;
+        critdmg = 1.2f;
+        attackSpeed = 0.5f;
+        moveSpeed = 5f;
+        range = 10f;
+        bulletSpeed = 10f;
+        bulletRange = 10f;
+        attackmodifires.Clear();
+
+        score.Value = 0;
+        HealOnServer(maxHealth);
+        currentHealth.Value = maxHealth;
+        IsAlive.Value = true;
+
+        canAttack = true;
+        target = null;
+    }
+
     public override void OnStartServer()
     {
         base.OnStartServer();
@@ -206,6 +228,7 @@ public class PlayerActions : NetworkBehaviour
         }
     }
 
+    #region Stat Increasers
     public void IncreaseDmg( float amount)
     {
         dmg += amount;
@@ -243,6 +266,7 @@ public class PlayerActions : NetworkBehaviour
         maxHealth += 1;
         currentHealth.Value += 1;
     }
+    #endregion
 
     public void AddAttackModifire(Attackmodifire modifire)
     {

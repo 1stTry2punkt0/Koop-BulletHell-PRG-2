@@ -163,7 +163,7 @@ public class EnemySpawner : NetworkBehaviour
             // If position is in any player's view, continue to next attempt
             if (isInView)
             {
-                Debug.Log("Spawn position is in player's view, trying again.");
+                //Debug.Log("Spawn position is in player's view, trying again.");
                 continue;
             }
 

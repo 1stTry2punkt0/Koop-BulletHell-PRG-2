@@ -56,7 +56,16 @@ public class WaveController : NetworkBehaviour
     public override void OnStartServer()
     {
         base.OnStartServer(); 
-        StartCoroutine(ManageWaves()); // Start managing waves on the server
+        //StartCoroutine(ManageWaves()); // Start managing waves on the server
+    }
+
+    [Server]
+    public void StartWaves()
+    {
+        bossAlive.Value = false;
+        gameOver.Value = false;
+        remainingWaveTime.Value = 0f;
+        StartCoroutine(ManageWaves());
     }
 
     private WaveEnemySetter GetEnemiesForWave(int wave)
@@ -95,6 +104,7 @@ public class WaveController : NetworkBehaviour
 
         // One time delay before starting the first wave
         betweenWaveTime.Value = timeBetweenWaves;
+        Debug.Log(betweenWaveTime.Value);
         while (betweenWaveTime.Value > 0f)
         {
             if(gameOver.Value)
