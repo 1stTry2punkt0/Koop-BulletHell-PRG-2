@@ -169,19 +169,15 @@ public class UIManager : MonoBehaviour
             resultText.text = "Defeated";
         }
 
-        foreach (PlayerMovement player in PlayerTracker.Players)
+        foreach (var player in PlayerTracker.Players)
         {
-            GameObject score = Instantiate(playerScorePrefab, playerScores);
-            score.GetComponent<TMPro.TMP_Text>().text = player.playerName + ": " + player.score.ToString();
-        }
+            PlayerActions actions = player.GetComponent<PlayerActions>();
+            PlayerMovement movement = player.GetComponent<PlayerMovement>();
 
+            GameObject score = Instantiate(playerScorePrefab, playerScores);
+            score.GetComponent<TMPro.TMP_Text>().text = movement.playerName.Value + ": " + actions.score.Value.ToString();
+        }
         //// Get top 4 players of the db
-        //List<(string, int)> topPlayers = DatabaseManager.Instance.GetTopPlayers(4);
-        //foreach (var (name, score) in topPlayers)
-        //{
-        //    GameObject scoreEntry = Instantiate(playerScorePrefab, Leaderboard);
-        //    scoreEntry.GetComponent<TMPro.TMP_Text>().text = name + ": " + score.ToString();
-        //}
         DatabaseManager.Instance.FetchTopScores(4, scores =>
         {
             foreach (var s in scores) {

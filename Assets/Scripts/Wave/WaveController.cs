@@ -249,12 +249,6 @@ public class WaveController : NetworkBehaviour
         // All waves completed, end the game
         EndGame();
         RpcShowWinScreen();
-        foreach (var player in PlayerTracker.Players)
-        {
-            PlayerActions actions = player.GetComponent<PlayerActions>();
-            PlayerMovement movement = player.GetComponent<PlayerMovement>();
-            DatabaseManager.Instance.SaveScore(movement.playerName.Value, actions.score.Value);
-        }
     }
 
     private void ReviveDeadPlayer()
@@ -302,6 +296,15 @@ public class WaveController : NetworkBehaviour
         }
         // Despawn all remaining enemies
         enemySpawner.DespawnAllEnemies();
+        Debug.Log("Game Over! Saving scores...");
+        foreach (var player in PlayerTracker.Players)
+        {
+            PlayerActions actions = player.GetComponent<PlayerActions>();
+            PlayerMovement movement = player.GetComponent<PlayerMovement>();
+            Debug.Log($"Saving score for player {movement.playerName.Value}: {actions.score.Value}");
+            DatabaseManager.Instance.SaveScore(movement.playerName.Value, actions.score.Value);
+        }
+
 
     }
 

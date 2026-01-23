@@ -114,6 +114,7 @@ public class Enemy : NetworkBehaviour
     [Server]
     private void AttackPlayer()
     {
+
         canAttack = false;
         // Handle attack logic here
         switch (enemyType.attackType)
