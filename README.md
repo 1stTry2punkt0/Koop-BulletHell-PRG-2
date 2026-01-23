@@ -77,8 +77,26 @@ The game must function as an online multiplayer experience (host + client) and m
 ## Technical Overview 
 **1. Used RPCs**
   - [ObserverRpc]
+    - ObserverStartGame() (GameManager)
+    - RpcShowWinScreen() (WaveController)
+    - EnterGame() (PreGameMenuManager)
+    - RpcSetAnimationState(int state) (PlayerAnimation)
+    - RpcShowEndscreen(bool isWin) (PlayerActions)
+    - StartLevelUp() (LootManager)
+    - RpcSetAnimationState(int state) (EnemyAnimation)
+    - RpcUpdateBossHealth(float perc) (Enemy)
+    - RpcShowChargeCone(bool show) (Enemy)
   - [TargetRpc]
-  - [ServerRpc] <br>
+    - MoveCallback(NetworkConnection conn, string msg) (PlayerMovement)
+  - [ServerRpc]
+    - SendCameraParmsServer(float fov, float aspect) (PlayerMovement)
+    - MoveServer(Vector3 input) (PlayerMovement)
+    - GoIdle() (PlayerMovement)
+    - ChangeSpeed(float increase) (PlayerMovement)
+    - SetIsLvling(bool val) (PlayerActions)
+    - HealOnServerRpc(int amount) (PlayerActions)
+    - IncreaseMaxHP() (PlayerActions)
+    - SpawnProjectileServer(Vector3 position, Quaternion rotation, float range, float speed, float dmg, bool isPlayer, PlayerActions owner) (ProjectileSpawner)<br>
 **2. Used SyncVars**
   - currentHealth (PlayerActions)
   - maxHealth (PlayerActions)
@@ -139,7 +157,7 @@ The game must function as an online multiplayer experience (host + client) and m
 
   ## Overview of implemented bonus 
   - Combined wave system with boss enemies.
-  - Added 2 additional enemy types.
+  - Added 3 additional enemy types.
   - Implemented level-ups and power-ups.
   - Created additional and more complex bullet patterns for the boss enemy and players.
   - Developed a fully adjustable wave system, allowing control over enemy spawns with weighted enimies, configurable spawn intervals, wave duration settings, and more.
