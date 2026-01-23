@@ -315,5 +315,6 @@ public enum Attackmodifire
     Behind,
     Explode,
     Piercing,
-    Homing
+    Homing,
+    none
 }

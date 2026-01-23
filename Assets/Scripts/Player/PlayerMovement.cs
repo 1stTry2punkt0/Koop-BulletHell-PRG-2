@@ -120,7 +120,10 @@ public class PlayerMovement : NetworkBehaviour
     {
         base.OnStartClient();
         if (!IsOwner)
+        {
+            nameTMP.text = playerName.Value;
             return;
+        }
         Camera camera = Camera.main;
         SendCameraParmsServer(camera.fieldOfView, camera.aspect);
         OnNameChange(default, playerName.Value, false);

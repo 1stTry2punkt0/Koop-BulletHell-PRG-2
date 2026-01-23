@@ -48,7 +48,7 @@ public class RedDragonAttack : NetworkBehaviour
         yield return new WaitForSeconds(0.4f); // Wait for windup animation
         float angle = 0f;
         float duration = 0f;
-        while (duration <= 2f)
+        while (duration <= 2.6f)
         {
             Quaternion rotation = Quaternion.Euler(0, angle, 0) * Quaternion.LookRotation(enemyMovement.target.position - transform.position);
             ProjectileSpawner.Instance.SpawnProjectileServer(transform.position + transform.forward * 1.5f, rotation, 10f, 10f, 1f, false, null);

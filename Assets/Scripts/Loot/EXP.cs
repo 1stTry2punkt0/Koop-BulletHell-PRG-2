@@ -11,7 +11,7 @@ public class EXP : NetworkBehaviour
         if (other != null && other.gameObject.CompareTag("Player"))
         {
             LootManager.instance.AddEXP(expAmount);
-            if (attackmodifire != null)
+            if (attackmodifire != Attackmodifire.none)
             {
                 //Get playeractions of other
                 PlayerActions pa = other.gameObject.GetComponent<PlayerActions>();
